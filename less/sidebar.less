@@ -56,3 +56,29 @@
         }
     }
 }
+
+// Homepage Sidebar (darker text)
+.post-list-wrapper .sidebar-container{
+    color: #777;
+    h5{
+        color: #777;
+        a{
+            color: #777 !important;
+        }
+    }
+    a{
+        color: #777 !important;
+        &:hover, &:active{
+            color: @brand-primary !important;
+        }
+    }
+    .tags a{
+        border-color: #777;
+        &:hover, &:active{
+            border-color: @brand-primary;
+        }
+    }
+    .info-label{
+        color: #777;
+    }
+}
