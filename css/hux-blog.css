@@ -1861,31 +1861,30 @@ img::-moz-selection {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-}
-  color: #666;
+  color: #444;
 }
 .post-list-wrapper .sidebar-container h5 {
-  color: #555;
+  color: #333;
 }
 .post-list-wrapper .sidebar-container h5 a {
-  color: #555 !important;
+  color: #333 !important;
 }
 .post-list-wrapper .sidebar-container a {
-  color: #666 !important;
+  color: #444 !important;
 }
 .post-list-wrapper .sidebar-container a:hover,
 .post-list-wrapper .sidebar-container a:active {
   color: #0085a1 !important;
 }
 .post-list-wrapper .sidebar-container .tags a {
-  border-color: #666;
+  border-color: #444;
 }
 .post-list-wrapper .sidebar-container .tags a:hover,
 .post-list-wrapper .sidebar-container .tags a:active {
   border-color: #0085a1;
 }
 .post-list-wrapper .sidebar-container .info-label {
-  color: #666;
+  color: #444;
 }
 @media only screen and (max-width: 767px) {
   .post-list-wrapper .postlist-container,
