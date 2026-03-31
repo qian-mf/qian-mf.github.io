@@ -1801,3 +1801,37 @@ img::-moz-selection {
   font-size: 16px;
   max-width: 80%;
 }
+
+/* Information Widget Styles */
+.information-widget {
+  margin-bottom: 20px;
+}
+.information-widget h5 {
+  color: #cccccc;
+  padding-bottom: 10px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.info-content {
+  font-size: 13px;
+}
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(191, 191, 191, 0.3);
+}
+.info-item:last-child {
+  border-bottom: none;
+}
+.info-label {
+  color: #bfbfbf;
+}
+.info-value {
+  color: #0085a1;
+  font-weight: 500;
+}
+.loading-text {
+  color: #999;
+}
