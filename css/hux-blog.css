@@ -1835,3 +1835,37 @@ img::-moz-selection {
 .loading-text {
   color: #999;
 }
+
+}
+
+/* Post List Background Wrapper */
+.post-list-wrapper {
+  background-repeat: repeat;
+  background-position: top center;
+  background-color: #f5f5f5;
+  padding-top: 0;
+  padding-bottom: 50px;
+  margin-top: 0;
+}
+.post-list-wrapper .container {
+  padding-top: 30px;
+}
+.post-list-wrapper .postlist-container {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 25px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+.post-list-wrapper .sidebar-container {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+@media only screen and (max-width: 767px) {
+  .post-list-wrapper .postlist-container,
+  .post-list-wrapper .sidebar-container {
+    padding: 15px;
+    border-radius: 0;
+  }
+}
