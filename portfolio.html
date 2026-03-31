@@ -1,0 +1,112 @@
+---
+layout: page
+title: "Portfolio"
+description: "我的美术作品展览"
+header-img: "img/post-bg-universe.jpg"
+nav-order: 2
+---
+
+<div class="zh post-container">
+    <blockquote>
+        <p>艺术是心灵的语言，每一幅作品都是灵魂的投影。</p>
+    </blockquote>
+
+    <h5>作品展览</h5>
+    <p>这里展示我的美术作品，记录创作的心路历程。</p>
+
+    <div class="portfolio-gallery">
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="{{ site.baseurl }}/img/portfolio/artwork-01.jpg" alt="作品1" onclick="openLightbox(this)">
+                <div class="gallery-caption">
+                    <h6>作品标题一</h6>
+                    <p>作品描述文字</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="{{ site.baseurl }}/img/portfolio/artwork-02.jpg" alt="作品2" onclick="openLightbox(this)">
+                <div class="gallery-caption">
+                    <h6>作品标题二</h6>
+                    <p>作品描述文字</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="{{ site.baseurl }}/img/portfolio/artwork-03.jpg" alt="作品3" onclick="openLightbox(this)">
+                <div class="gallery-caption">
+                    <h6>作品标题三</h6>
+                    <p>作品描述文字</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="{{ site.baseurl }}/img/portfolio/artwork-04.jpg" alt="作品4" onclick="openLightbox(this)">
+                <div class="gallery-caption">
+                    <h6>作品标题四</h6>
+                    <p>作品描述文字</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="{{ site.baseurl }}/img/portfolio/artwork-05.jpg" alt="作品5" onclick="openLightbox(this)">
+                <div class="gallery-caption">
+                    <h6>作品标题五</h6>
+                    <p>作品描述文字</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="{{ site.baseurl }}/img/portfolio/artwork-06.jpg" alt="作品6" onclick="openLightbox(this)">
+                <div class="gallery-caption">
+                    <h6>作品标题六</h6>
+                    <p>作品描述文字</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-img" class="lightbox-content">
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+</div>
+
+<script>
+function openLightbox(img) {
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    var caption = document.getElementById('lightbox-caption');
+    
+    lightbox.style.display = 'flex';
+    lightboxImg.src = img.src;
+    caption.innerHTML = img.alt;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    var lightbox = document.getElementById('lightbox');
+    lightbox.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeLightbox();
+    }
+});
+</script>
+
+{% if site.gitalk.enable %}
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
+<div id="gitalk-container"></div>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+    clientID: '{{site.gitalk.clientID}}',
+    clientSecret: '{{site.gitalk.clientSecret}}',
+    repo: '{{site.gitalk.repo}}',
+    owner: '{{site.gitalk.owner}}',
+    admin: ['{{site.gitalk.admin}}'],
+    distractionFreeMode: '{{site.gitalk.distractionFreeMode}}',
+    id: 'portfolio',
+    });
+    gitalk.render('gitalk-container');
+</script>
+{% endif %}
