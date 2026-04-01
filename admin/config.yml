@@ -1,0 +1,42 @@
+backend:
+  name: github
+  repo: qian-mf/qian-mf.github.io
+  branch: main
+
+media_folder: "img/uploads"
+public_folder: "/img/uploads"
+
+collections:
+  - name: "posts"
+    label: "博文"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "布局", name: "layout", widget: "hidden", default: "post"}
+      - {label: "标题", name: "title", widget: "string"}
+      - {label: "副标题", name: "subtitle", widget: "string", required: false}
+      - {label: "日期", name: "date", widget: "datetime"}
+      - {label: "作者", name: "author", widget: "string", default: "錢牧風"}
+      - {label: "头部图片", name: "header-img", widget: "image", required: false}
+      - {label: "是否显示目录", name: "catalog", widget: "boolean", default: true}
+      - {label: "标签", name: "tags", widget: "list", required: false}
+      - {label: "正文", name: "body", widget: "markdown"}
+
+  - name: "pages"
+    label: "页面"
+    files:
+      - name: "about"
+        label: "关于我"
+        file: "about.html"
+        fields:
+          - {label: "布局", name: "layout", widget: "hidden", default: "page"}
+          - {label: "标题", name: "title", widget: "string"}
+          - {label: "正文", name: "body", widget: "markdown"}
+      - name: "portfolio"
+        label: "作品集"
+        file: "portfolio.html"
+        fields:
+          - {label: "布局", name: "layout", widget: "hidden", default: "page"}
+          - {label: "标题", name: "title", widget: "string"}
+          - {label: "正文", name: "body", widget: "markdown"}
