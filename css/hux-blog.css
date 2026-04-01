@@ -1872,7 +1872,7 @@ img::-moz-selection {
   background-color: #f5f5f5;
   padding-top: 0;
   padding-bottom: 50px;
-  margin-top: 0;
+  margin-top: -20px;
 }
 .post-list-wrapper .container {
   padding-top: 30px;
