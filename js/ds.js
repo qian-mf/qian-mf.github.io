@@ -2049,7 +2049,7 @@
                         this.createDom(_defineProperty({
                             href: 'https://qian-mf.github.io/',
                             target: '_blank'
-                        }, _dom.textKey, '了解更多⚽🏀💻'), 'a');
+                        }, _dom.textKey, '瞭解更多⚽🏀💻'), 'a');
                     }
                 }]);
 
@@ -2105,7 +2105,7 @@
                     value: function genDom() {
                         this.createDom(_defineProperty({
                             className: 'tctip-title'
-                        }, _dom.textKey, '喜欢就请我喝一杯🍹'), 'h1');
+                        }, _dom.textKey, '喜歡就請我喝一杯🍹'), 'h1');
                     }
                 }]);
 
