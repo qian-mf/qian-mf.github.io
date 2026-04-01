@@ -442,23 +442,23 @@
             var defaultList = {
                 alipay: {
                     icon: __webpack_require__(30),
-                    name: '支付宝',
-                    desc: '支付宝打赏💰'
+                    name: '支付寶',
+                    desc: '支付寶打賞💰'
                 },
                 wechat: {
                     icon: __webpack_require__(33),
                     name: '微信',
-                    desc: '微信打赏💰'
+                    desc: '微信打賞💰'
                 },
                 bitcoin: {
                     icon: __webpack_require__(31),
-                    name: '比特币',
-                    desc: '比特币打赏'
+                    name: '比特幣',
+                    desc: '比特幣打賞'
                 },
                 tenpay: {
                     icon: __webpack_require__(32),
-                    name: '财付通',
-                    desc: '财付通打赏'
+                    name: '財付通',
+                    desc: '財付通打賞'
                 }
             };
 
