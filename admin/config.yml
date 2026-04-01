@@ -1,7 +1,7 @@
 backend:
   name: git-gateway
   repo: qian-mf/qian-mf.github.io
-  branch: main
+  branch: master
   identity_url: https://auth.decapbridge.com/sites/bd81d17a-1b19-416f-83b9-0f4c5e4f1d95
   gateway_url: https://gateway.decapbridge.com
 
