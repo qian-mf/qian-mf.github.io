@@ -1994,3 +1994,23 @@ img::-moz-selection {
 .navbar-nav .caret {
   margin-left: 5px;
 }
+
+/* Hidden Admin Button */
+.intro-header {
+  position: relative;
+}
+.hidden-admin-btn {
+  position: absolute;
+  right: 9.8%;
+  top: 54.1%;
+  width: 32px;
+  height: 40px;
+  background: transparent;
+  z-index: 100;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+.hidden-admin-btn:hover {
+  background: rgba(0, 47, 167, 0.1);
+}
