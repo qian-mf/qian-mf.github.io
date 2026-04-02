@@ -2005,13 +2005,13 @@ img::-moz-selection {
   top: 54.1%;
   width: 24px;
   height: 36px;
-  background: rgba(255, 0, 0, 0.5);
-  border: 3px solid red;
+  background: transparent;
+  border: none;
   z-index: 9999;
   cursor: pointer;
   display: block;
   transform: translateX(14px) translateY(5px);
 }
 .hidden-admin-btn:hover {
-  background: rgba(255, 0, 0, 0.8);
+  background: rgba(0, 47, 167, 0.2);
 }
