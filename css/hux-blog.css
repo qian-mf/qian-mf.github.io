@@ -1816,7 +1816,7 @@ img::-moz-selection {
   margin: 0;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.85);
-    text-indent: 0;
+  text-indent: 0;
 }
 .gallery-caption p.preserve-newlines br {
   display: block;
