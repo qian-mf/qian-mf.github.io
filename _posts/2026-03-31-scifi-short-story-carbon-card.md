@@ -2,7 +2,7 @@
 layout: post
 title: 科幻短篇小说：碳卡
 subtitle: 2023年4月获第九届全国科普科幻作文大赛高中组上海赛区省级一等奖
-date: 2026-03-31 20:28:00 +0800
+date: 2026-03-31
 author: 星川 著
 catalog: true
 tags:
