@@ -1,3 +1,9 @@
+@media (min-width: 1400px) {
+  .container {
+    width: 1350px;
+    max-width: 1350px;
+  }
+}
 @media (min-width: 1200px) {
   .post-container,
   .sidebar-container {
@@ -12,8 +18,7 @@
 .sidebar-container {
   color: #bfbfbf;
   font-size: 14px;
-  padding-left: 3em;
-
+  padding-left: 2em;
 }
 .sidebar-container h5 {
   color: #cccccc;
@@ -743,6 +748,9 @@ samp {
 .post-container p {
   text-indent: 2em;
   margin: 1em 0;
+}
+.post-container a {
+  color: #337ab7;
 }
 .post-container a:hover,
 .post-container a:focus {
@@ -1919,10 +1927,11 @@ img::-moz-selection {
 .post-list-wrapper .sidebar-container {
   background: rgba(255, 255, 255, 0.92);
   padding: 20px;
-  padding-left: 2em !important;
   border-radius: 8px;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-
+}
+.post-list-wrapper .sidebar-container > * {
+  margin-left: 2em;
 }
 @media only screen and (max-width: 767px) {
   .post-list-wrapper .postlist-container,
@@ -1931,7 +1940,6 @@ img::-moz-selection {
     border-radius: 0;
   }
 }
-
 
 /* Dropdown Menu Styles */
 .navbar-nav .dropdown {
