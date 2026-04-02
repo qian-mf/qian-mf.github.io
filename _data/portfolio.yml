@@ -1,26 +1,7 @@
----
 portfolio_list:
-  - title: "作品标题一"
-    image: "img/portfolio/artwork-01.jpg"
-    description: "作品描述文字"
+  - title: 教化嘉定
+    image: img/uploads/_cgi-bin_mmwebwx-bin_webwxgetmsgimg__-msgid-4753226223890475274-skey-crypt_1ad6934e_e905501ca1681d53167123384ef91fc4-mmweb_appid-wx_webfilehelper.jpg
+    description: |-
+      释文：教化嘉定
+      2025-6-10代表高中参加【育美润心，嘉美致远】“美育浸润成果展”嘉定篇的社团展示，应时任学生管理处主任徐老师委托刻制
     order: 1
-  - title: "作品标题二"
-    image: "img/portfolio/artwork-02.jpg"
-    description: "作品描述文字"
-    order: 2
-  - title: "作品标题三"
-    image: "img/portfolio/artwork-03.jpg"
-    description: "作品描述文字"
-    order: 3
-  - title: "作品标题四"
-    image: "img/portfolio/artwork-04.jpg"
-    description: "作品描述文字"
-    order: 4
-  - title: "作品标题五"
-    image: "img/portfolio/artwork-05.jpg"
-    description: "作品描述文字"
-    order: 5
-  - title: "作品标题六"
-    image: "img/portfolio/artwork-06.jpg"
-    description: "作品描述文字"
-    order: 6
