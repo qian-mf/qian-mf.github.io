@@ -18,33 +18,39 @@ title: Admin
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script>
-    CMS.registerEventListener({
-      name: 'mounted',
-      handler: function() {
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Tab') {
-            var textarea = document.querySelector('.cms-editor-ctrl textarea, .ProseMirror');
-            if (textarea && document.activeElement === textarea) {
-              e.preventDefault();
-              var start = textarea.selectionStart;
-              var end = textarea.selectionEnd;
-              var value = textarea.value;
-              var lineStart = value.lastIndexOf('\n', start - 1) + 1;
-              var isLineStart = (start === lineStart);
-              
-              if (isLineStart) {
-                textarea.value = value.substring(0, start) + '　　' + value.substring(end);
-                textarea.selectionStart = textarea.selectionEnd = start + 2;
-              } else {
-                textarea.value = value.substring(0, start) + '    ' + value.substring(end);
-                textarea.selectionStart = textarea.selectionEnd = start + 4;
-              }
-              textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    var ready = false;
+    
+    function setupTabIndent() {
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          var textarea = document.querySelector('.cms-editor-ctrl textarea, .ProseMirror');
+          if (textarea && document.activeElement === textarea) {
+            e.preventDefault();
+            var start = textarea.selectionStart;
+            var end = textarea.selectionEnd;
+            var value = textarea.value;
+            var lineStart = value.lastIndexOf('\n', start - 1) + 1;
+            var isLineStart = (start === lineStart);
+            
+            if (isLineStart) {
+              textarea.value = value.substring(0, start) + '　　' + value.substring(end);
+              textarea.selectionStart = textarea.selectionEnd = start + 2;
+            } else {
+              textarea.value = value.substring(0, start) + '    ' + value.substring(end);
+              textarea.selectionStart = textarea.selectionEnd = start + 4;
             }
+            textarea.dispatchEvent(new Event('input', { bubbles: true }));
           }
-        });
-      }
-    });
+        }
+      });
+    }
+    
+    if (typeof CMS !== 'undefined') {
+      CMS.registerEventListener({
+        name: 'mounted',
+        handler: setupTabIndent
+      });
+    }
   </script>
 </body>
 </html>
