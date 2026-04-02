@@ -8,7 +8,7 @@
     </div>
     <div class="info-item">
       <span class="info-label">本站总字数</span>
-      <span class="info-value">{{ site.posts | map: 'content' | join: ' ' | number_of_words }} 字</span>
+      <span class="info-value">{% assign total_words = 0 %}{% for post in site.posts %}{% assign content = post.content | strip_html | strip %}{% assign total_words = total_words | plus: content.size %}{% endfor %}{{ total_words }} 字</span>
     </div>
     <div class="info-item">
       <span class="info-label">最后更新时间</span>
