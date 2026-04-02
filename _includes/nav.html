@@ -24,12 +24,33 @@
                         <a href="{{ site.baseurl }}/">Home</a>
                     </li>
                     {% for page in site.pages %}
-                    {% if page.title and page.hide-in-nav != true %}
+                    {% if page.title and page.hide-in-nav != true and page.title != 'Portfolio' %}
                     <li>
                         <a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
                     </li>
                     {% endif %}
                     {% endfor %}
+                                        <!-- Portfolio Dropdown -->
+                    <li class="dropdown">
+                        <a href="{{ site.baseurl }}/portfolio.html" class="dropdown-toggle" data-toggle="dropdown">
+                            Portfolio <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ site.baseurl }}/portfolio.html">常设展览</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">特别展览</li>
+                            {% assign exhibitions = site.data.special_exhibitions.special_exhibitions %}
+                            {% for exhibition in exhibitions %}
+                            {% if exhibition.online == true %}
+                            <li>
+                                <a href="{{ site.baseurl }}/special-exhibition.html?id={{ exhibition.id | url_encode }}">{{ exhibition.title }}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
