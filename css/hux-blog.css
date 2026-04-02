@@ -2010,7 +2010,7 @@ img::-moz-selection {
   z-index: 9999;
   cursor: pointer;
   display: block;
-  transform: translateX(30px);
+  transform: translateX(6px) translateY(2px);
 }
 .hidden-admin-btn:hover {
   background: rgba(255, 0, 0, 0.8);
