@@ -32,12 +32,12 @@
                     {% endfor %}
                     <!-- Portfolio Dropdown -->
                     <li class="dropdown">
-                        <a href="{{ site.baseurl }}/portfolio.html" class="dropdown-toggle" data-toggle="dropdown">
+                        <a href="{{ site.baseurl }}/portfolio/" class="dropdown-toggle" data-toggle="dropdown">
                             Portfolio <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="{{ site.baseurl }}/portfolio.html">常设展览</a>
+                                <a href="{{ site.baseurl }}/portfolio/">常设展览</a>
                             </li>
                             <li class="divider"></li>
                             <li class="dropdown-header">特别展览</li>
@@ -45,7 +45,7 @@
                             {% for exhibition in exhibitions %}
                             {% if exhibition.online == true %}
                             <li>
-                                <a href="{{ site.baseurl }}/special-exhibition.html?id={{ exhibition.id | url_encode }}">{{ exhibition.title }}</a>
+                                <a href="{{ site.baseurl }}/special-exhibition/?id={{ exhibition.id | url_encode }}">{{ exhibition.title }}</a>
                             </li>
                             {% endif %}
                             {% endfor %}
