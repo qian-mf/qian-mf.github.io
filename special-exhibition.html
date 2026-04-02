@@ -1,0 +1,111 @@
+---
+layout: page
+title: "特别展览"
+description: "特展作品展示"
+header-img: "img/post-bg-universe.jpg"
+hide-in-nav: true
+---
+
+<div class="zh post-container" id="exhibition-container">
+    <div id="exhibition-content"></div>
+    <div id="exhibition-not-found" style="display: none;">
+        <h3>展览未找到</h3>
+        <p>该特展尚未开放或不存在，请稍后再来参观。</p>
+        <p><a href="{{ site.baseurl }}/portfolio.html">返回常设展览</a></p>
+    </div>
+</div>
+
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-img" class="lightbox-content">
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+</div>
+
+<script>
+(function() {
+    var exhibitions = {{ site.data.special_exhibitions.special_exhibitions | jsonify }};
+    
+    function getQueryParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+    
+    function findExhibition(id) {
+        if (!exhibitions) return null;
+        for (var i = 0; i < exhibitions.length; i++) {
+            if (exhibitions[i].id === id && exhibitions[i].online === true) {
+                return exhibitions[i];
+            }
+        }
+        return null;
+    }
+    
+    function renderExhibition(exhibition) {
+        var container = document.getElementById('exhibition-content');
+        
+        var html = '<blockquote><p>' + (exhibition.description || '') + '</p></blockquote>';
+        html += '<h5>' + exhibition.title + '</h5>';
+        if (exhibition.intro) {
+            html += '<p>' + exhibition.intro + '</p>';
+        }
+        
+        if (exhibition.artworks && exhibition.artworks.length > 0) {
+            html += '<div class="portfolio-gallery"><div class="gallery-grid">';
+            exhibition.artworks.forEach(function(artwork) {
+                html += '<div class="gallery-item">';
+                html += '<img src="{{ site.baseurl }}/' + artwork.image + '" alt="' + artwork.title + '" onclick="openLightbox(this)">';
+                html += '<div class="gallery-caption">';
+                html += '<h6>' + artwork.title + '</h6>';
+                html += '<p>' + (artwork.description || '') + '</p>';
+                html += '</div></div>';
+            });
+            html += '</div></div>';
+        }
+        
+        container.innerHTML = html;
+        document.getElementById('exhibition-container').style.display = 'block';
+    }
+    
+    function showNotFound() {
+        document.getElementById('exhibition-content').style.display = 'none';
+        document.getElementById('exhibition-not-found').style.display = 'block';
+    }
+    
+    var exhibitionId = getQueryParam('id');
+    
+    if (exhibitionId) {
+        var exhibition = findExhibition(exhibitionId);
+        if (exhibition) {
+            document.title = exhibition.title + ' - {{ site.title }}';
+            renderExhibition(exhibition);
+        } else {
+            showNotFound();
+        }
+    } else {
+        showNotFound();
+    }
+})();
+
+function openLightbox(img) {
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    var caption = document.getElementById('lightbox-caption');
+    
+    lightbox.style.display = 'flex';
+    lightboxImg.src = img.src;
+    caption.innerHTML = img.alt;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    var lightbox = document.getElementById('lightbox');
+    lightbox.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeLightbox();
+    }
+});
+</script>
