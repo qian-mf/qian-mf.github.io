@@ -7,7 +7,7 @@ description: "hello_world."
 keyword: "臨天牧風的展館, MF-Qian, 錢牧風, Java"
 url: "https://qian-mf.github.io/"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
-github_repo: "https://github.com/flyingwzb/flyingwzb.github.io.git" # you code repository
+github_repo: "https://github.com/qian-mf/qian-mf.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
