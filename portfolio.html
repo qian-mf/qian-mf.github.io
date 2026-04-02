@@ -21,7 +21,7 @@ nav-order: 2
                 <img src="{{ site.baseurl }}/{{ item.image }}" alt="{{ item.title }}" onclick="openLightbox(this)">
                 <div class="gallery-caption">
                     <h6>{{ item.title }}</h6>
-                    <p>{{ item.description }}</p>
+                    <p class="preserve-newlines">{{ item.description | newline_to_br }}</p>
                 </div>
             </div>
             {% endfor %}
