@@ -18,7 +18,7 @@ site_url: https://qian-mf.github.io
 
 media_folder: "img/uploads"
 public_folder: "img/uploads"
-    
+
 collections:
   - name: "posts"
     label: "博文"
@@ -47,8 +47,7 @@ collections:
           - {label: "布局", name: "layout", widget: "hidden", default: "page"}
           - {label: "标题", name: "title", widget: "string"}
           - {label: "正文", name: "body", widget: "markdown"}
-      - name: "portfolio"
- 
+
   - name: "portfolio"
     label: "作品集"
     files:
