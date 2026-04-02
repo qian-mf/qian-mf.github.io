@@ -74,6 +74,32 @@
 .post-list-wrapper .sidebar-container .tags a:active {
   border-color: #0085a1;
 }
+article .sidebar-container {
+  color: #777;
+}
+article .sidebar-container h5 {
+  color: #777;
+}
+article .sidebar-container h5 a {
+  color: #777 !important;
+}
+article .sidebar-container a {
+  color: #777 !important;
+}
+article .sidebar-container .tags a {
+  border-color: #777;
+}
+article .sidebar-container .info-label {
+  color: #777;
+}
+article .sidebar-container a:hover,
+article .sidebar-container a:active {
+  color: #0085a1 !important;
+}
+article .sidebar-container .tags a:hover,
+article .sidebar-container .tags a:active {
+  border-color: #0085a1;
+}
 .catalog-container {
   padding: 0px;
 }
@@ -712,8 +738,9 @@ samp {
 .postlist-container {
   margin-bottom: 15px;
 }
-.post-container a {
-  color: #337ab7;
+.post-container p {
+  text-indent: 2em;
+  margin: 1em 0;
 }
 .post-container a:hover,
 .post-container a:focus {
