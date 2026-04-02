@@ -52,7 +52,7 @@ collections:
     label: "作品集"
     files:
       - name: "portfolio"
-        label: "作品管理"
+        label: "常设展览"
         file: "_data/portfolio.yml"
         fields:
           - label: "作品列表"
@@ -64,3 +64,30 @@ collections:
               - {label: "作品图片", name: "image", widget: "image", allow_multiple: false}
               - {label: "作品描述", name: "description", widget: "text"}
               - {label: "排序", name: "order", widget: "number", default: 1, hint: "数字越小越靠前"}
+
+
+  - name: "special"
+    label: "特别展览"
+    files:
+      - name: "special_exhibitions"
+        label: "特展管理"
+        file: "_data/special_exhibitions.yml"
+        fields:
+          - label: "特展列表"
+            name: "special_exhibitions"
+            widget: "list"
+            summary: "{{fields.title}} - {{fields.online}}"
+            fields:
+              - {label: "唯一标识符", name: "id", widget: "string", hint: "英文ID，如 special-2024，如已存在会自动识别"}
+              - {label: "特展标题", name: "title", widget: "string"}
+              - {label: "简短描述", name: "description", widget: "text", required: false}
+              - {label: "展览介绍", name: "intro", widget: "text", required: false}
+              - {label: "上线", name: "online", widget: "boolean", default: false, hint: "勾选后特展将在导航中显示"}
+              - {label: "排序", name: "order", widget: "number", default: 1}
+              - label: "作品列表"
+                name: "artworks"
+                widget: "list"
+                fields:
+                  - {label: "作品标题", name: "title", widget: "string"}
+                  - {label: "作品图片", name: "image", widget: "image", allow_multiple: false}
+                  - {label: "作品描述", name: "description", widget: "text", required: false}
