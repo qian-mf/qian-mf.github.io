@@ -16,8 +16,7 @@ nav-order: 2
 
     <div class="portfolio-gallery">
         <div class="gallery-grid">
-            {% assign items = site.data.portfolio.portfolio_list | sort: 'order' %}
-            {% for item in items %}
+            {% for item in site.data.portfolio.portfolio_list %}
             <div class="gallery-item">
                 <img src="{{ site.baseurl }}/{{ item.image }}" alt="{{ item.title }}" onclick="openLightbox(this)">
                 <div class="gallery-caption">
