@@ -2003,12 +2003,13 @@ img::-moz-selection {
   position: absolute;
   right: 9.8%;
   top: 54.1%;
-  width: 32px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   background: rgba(255, 0, 0, 0.5);
-  border: 2px solid red;
-  z-index: 100;
+  border: 3px solid red;
+  z-index: 9999;
   cursor: pointer;
+  display: block;
 }
 .hidden-admin-btn:hover {
   background: rgba(255, 0, 0, 0.8);
