@@ -12,6 +12,8 @@
 .sidebar-container {
   color: #bfbfbf;
   font-size: 14px;
+  margin-left: 2em;
+
 }
 .sidebar-container h5 {
   color: #cccccc;
@@ -1075,6 +1077,10 @@ samp {
   -o-background-size: cover;
   margin-bottom: 0px;
 }
+.intro-header.no-bottom-margin {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
 .intro-header.style-text {
   background: none;
 }
@@ -1899,7 +1905,7 @@ img::-moz-selection {
   background-color: #f5f5f5;
   padding-top: 0;
   padding-bottom: 50px;
-  margin-top: -20px;
+  margin-top: -80px;
 }
 .post-list-wrapper .container {
   padding-top: 30px;
