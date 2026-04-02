@@ -48,9 +48,20 @@ collections:
           - {label: "标题", name: "title", widget: "string"}
           - {label: "正文", name: "body", widget: "markdown"}
       - name: "portfolio"
-        label: "作品集"
-        file: "portfolio.html"
+ 
+  - name: "portfolio"
+    label: "作品集"
+    files:
+      - name: "portfolio"
+        label: "作品管理"
+        file: "_data/portfolio.yml"
         fields:
-          - {label: "布局", name: "layout", widget: "hidden", default: "page"}
-          - {label: "标题", name: "title", widget: "string"}
-          - {label: "正文", name: "body", widget: "markdown"}
+          - label: "作品列表"
+            name: "portfolio_list"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - {label: "作品标题", name: "title", widget: "string"}
+              - {label: "作品图片", name: "image", widget: "image", allow_multiple: false}
+              - {label: "作品描述", name: "description", widget: "text"}
+              - {label: "排序", name: "order", widget: "number", default: 1, hint: "数字越小越靠前"}
