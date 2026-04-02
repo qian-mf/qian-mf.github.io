@@ -1816,6 +1816,12 @@ img::-moz-selection {
   margin: 0;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.85);
+    text-indent: 0;
+}
+.gallery-caption p.preserve-newlines br {
+  display: block;
+  content: "";
+  margin-bottom: 0.3em;
 }
 @media (max-width: 768px) {
   .gallery-grid {
