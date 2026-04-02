@@ -109,4 +109,24 @@
         if (e.target.className == 'icon-bar') return;
         __HuxNav__.close();
     });
+    
+    // Dropdown hover trigger
+    (function() {
+        var dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(function(dropdown) {
+            dropdown.addEventListener('mouseenter', function() {
+                var toggle = this.querySelector('.dropdown-toggle');
+                var menu = this.querySelector('.dropdown-menu');
+                if (menu) {
+                    menu.style.display = 'block';
+                }
+            });
+            dropdown.addEventListener('mouseleave', function() {
+                var menu = this.querySelector('.dropdown-menu');
+                if (menu) {
+                    menu.style.display = 'none';
+                }
+            });
+        });
+    })();
 </script>
