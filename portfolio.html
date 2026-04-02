@@ -14,17 +14,26 @@ nav-order: 2
     <h5>作品展覽</h5>
     <p>这里展示我的美术作品，主要是篆刻，謝謝喜歡。</p>
 
+        <!-- Debug info -->
+    <p>数据测试: {{ site.data.portfolio | inspect }}</p>
+    <p>列表测试: {{ site.data.portfolio.portfolio_list | inspect }}</p>
+    <p>列表数量: {{ site.data.portfolio.portfolio_list | size }}</p>
+
     <div class="portfolio-gallery">
         <div class="gallery-grid">
-            {% for item in site.data.portfolio.portfolio_list %}
-            <div class="gallery-item">
-                <img src="{{ site.baseurl }}/{{ item.image }}" alt="{{ item.title }}" onclick="openLightbox(this)">
-                <div class="gallery-caption">
-                    <h6>{{ item.title }}</h6>
-                    <p>{{ item.description }}</p>
+            {% if site.data.portfolio.portfolio_list %}
+                {% for item in site.data.portfolio.portfolio_list %}
+                <div class="gallery-item">
+                    <img src="{{ site.baseurl }}/{{ item.image }}" alt="{{ item.title }}" onclick="openLightbox(this)">
+                    <div class="gallery-caption">
+                        <h6>{{ item.title }}</h6>
+                        <p>{{ item.description }}</p>
+                    </div>
                 </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p>暂无作品数据</p>
+            {% endif %}
         </div>
     </div>
 </div>
