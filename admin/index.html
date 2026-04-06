@@ -35,6 +35,9 @@ hide-in-nav: true
       background: #f7f7f7;
       border-bottom: 1px solid #ddd;
       margin-bottom: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
     
     .image-dialog {
@@ -53,9 +56,11 @@ hide-in-nav: true
       background: white;
       padding: 24px;
       border-radius: 8px;
-      max-width: 450px;
+      max-width: 500px;
       width: 90%;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .image-dialog-content h3 {
       margin: 0 0 16px 0;
@@ -106,22 +111,37 @@ hide-in-nav: true
       background: #ccc;
     }
     
-    .preview-post-image {
-      margin: 16px 0;
-      padding: 12px;
-      background: #f0f7ff;
-      border: 1px dashed #002FA7;
+    .image-row-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
       border-radius: 4px;
-      text-align: center;
+      margin-bottom: 8px;
     }
-    .preview-post-image img {
-      max-width: 100%;
+    .image-row-item input {
+      flex: 1;
+      margin-bottom: 0 !important;
+    }
+    .image-row-item .remove-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
       border-radius: 4px;
+      padding: 6px 10px;
+      cursor: pointer;
     }
-    .preview-post-image figcaption {
-      margin-top: 8px;
-      font-size: 13px;
-      color: #666;
+    
+    .add-image-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      cursor: pointer;
+      margin-bottom: 12px;
     }
   </style>
 </head>
@@ -141,29 +161,46 @@ hide-in-nav: true
       dialog.className = 'image-dialog';
       dialog.innerHTML = '\
         <div class="image-dialog-content">\
-          <h3>插入高级图片</h3>\
-          <label>图片地址 *</label>\
-          <input type="text" id="img-src" placeholder="/img/uploads/example.jpg">\
-          <label>图片描述</label>\
-          <input type="text" id="img-alt" placeholder="图片描述（可选）">\
-          <label>图片大小</label>\
-          <select id="img-size">\
-            <option value="small">小 (200px)</option>\
-            <option value="medium" selected>中 (400px)</option>\
-            <option value="large">大 (600px)</option>\
-            <option value="full">全宽</option>\
-          </select>\
-          <label>图片位置</label>\
-          <select id="img-align">\
-            <option value="center" selected>居中</option>\
-            <option value="left">左对齐（文字环绕）</option>\
-            <option value="right">右对齐（文字环绕）</option>\
-          </select>\
+          <h3>插入图片</h3>\
           <label>显示模式</label>\
-          <select id="img-mode">\
-            <option value="normal" selected>普通显示</option>\
-            <option value="thumbnail">缩略图（点击放大）</option>\
+          <select id="img-display-mode">\
+            <option value="single">单张图片</option>\
+            <option value="row">多图并排（一行多张）</option>\
           </select>\
+          <div id="single-image-section">\
+            <label>图片地址 *</label>\
+            <input type="text" id="img-src" placeholder="/img/uploads/example.jpg">\
+            <label>图片描述</label>\
+            <input type="text" id="img-alt" placeholder="图片描述（可选）">\
+            <label>图片大小</label>\
+            <select id="img-size">\
+              <option value="small">小 (200px)</option>\
+              <option value="medium" selected>中 (400px)</option>\
+              <option value="large">大 (600px)</option>\
+              <option value="full">全宽</option>\
+            </select>\
+            <label>图片位置</label>\
+            <select id="img-align">\
+              <option value="center" selected>居中</option>\
+              <option value="left">左对齐（文字环绕）</option>\
+              <option value="right">右对齐（文字环绕）</option>\
+            </select>\
+            <label>点击放大</label>\
+            <select id="img-mode">\
+              <option value="normal" selected>否</option>\
+              <option value="thumbnail">是（缩略图模式）</option>\
+            </select>\
+          </div>\
+          <div id="row-image-section" style="display:none;">\
+            <label>每行图片数量</label>\
+            <select id="row-count">\
+              <option value="2">2张</option>\
+              <option value="3" selected>3张</option>\
+              <option value="4">4张</option>\
+            </select>\
+            <div id="image-row-list"></div>\
+            <button type="button" class="add-image-btn" id="add-row-image">+ 添加图片</button>\
+          </div>\
           <div class="btn-group">\
             <button class="btn-secondary" id="cancel-btn">取消</button>\
             <button class="btn-primary" id="insert-btn">插入</button>\
@@ -172,37 +209,85 @@ hide-in-nav: true
       
       document.body.appendChild(dialog);
       
+      var displayMode = document.getElementById('img-display-mode');
+      var singleSection = document.getElementById('single-image-section');
+      var rowSection = document.getElementById('row-image-section');
+      var imageRowList = document.getElementById('image-row-list');
+      
+      displayMode.onchange = function() {
+        if (this.value === 'single') {
+          singleSection.style.display = 'block';
+          rowSection.style.display = 'none';
+        } else {
+          singleSection.style.display = 'none';
+          rowSection.style.display = 'block';
+          if (imageRowList.children.length === 0) {
+            addRowImageItem();
+          }
+        }
+      };
+      
+      function addRowImageItem() {
+        var item = document.createElement('div');
+        item.className = 'image-row-item';
+        item.innerHTML = '\
+          <input type="text" class="row-img-src" placeholder="图片地址">\
+          <input type="text" class="row-img-alt" placeholder="描述（可选）" style="width:120px;">\
+          <button type="button" class="remove-btn">删除</button>';
+        item.querySelector('.remove-btn').onclick = function() {
+          item.remove();
+        };
+        imageRowList.appendChild(item);
+      }
+      
+      document.getElementById('add-row-image').onclick = addRowImageItem;
+      
       document.getElementById('cancel-btn').onclick = function() {
         dialog.remove();
       };
       
       document.getElementById('insert-btn').onclick = function() {
-        var src = document.getElementById('img-src').value.trim();
-        if (!src) {
-          alert('请输入图片地址');
-          return;
-        }
+        var shortcode = '';
         
-        var alt = document.getElementById('img-alt').value.trim();
-        var size = document.getElementById('img-size').value;
-        var align = document.getElementById('img-align').value;
-        var mode = document.getElementById('img-mode').value;
-        
-        var shortcode = '\n' + includeTagStart + 'src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '"' + includeTagEnd + '\n';
-        
-        if (currentEditor) {
-          var cm = currentEditor.cmEditor || currentEditor;
-          if (cm && cm.replaceSelection) {
-            cm.replaceSelection(shortcode);
-          } else if (cm && cm.dispatch) {
-            var pos = cm.state.selection.main.to;
-            cm.dispatch({
-              changes: { from: pos, insert: shortcode },
-              selection: { anchor: pos + shortcode.length }
-            });
+        if (displayMode.value === 'single') {
+          var src = document.getElementById('img-src').value.trim();
+          if (!src) {
+            alert('请输入图片地址');
+            return;
           }
+          var alt = document.getElementById('img-alt').value.trim();
+          var size = document.getElementById('img-size').value;
+          var align = document.getElementById('img-align').value;
+          var mode = document.getElementById('img-mode').value;
+          
+          shortcode = '\n' + includeTagStart + 'src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '"' + includeTagEnd + '\n';
+        } else {
+          var rowCount = document.getElementById('row-count').value;
+          var items = imageRowList.querySelectorAll('.image-row-item');
+          var images = [];
+          
+          items.forEach(function(item) {
+            var src = item.querySelector('.row-img-src').value.trim();
+            var alt = item.querySelector('.row-img-alt').value.trim();
+            if (src) {
+              images.push({ src: src, alt: alt });
+            }
+          });
+          
+          if (images.length === 0) {
+            alert('请至少添加一张图片');
+            return;
+          }
+          
+          shortcode = '\n' + '{%' + ' include image_row.html count="' + rowCount + '" images="';
+          images.forEach(function(img, i) {
+            shortcode += img.src + '|' + img.alt;
+            if (i < images.length - 1) shortcode += ',';
+          });
+          shortcode += '"' + ' %' + '}\n';
         }
         
+        insertToEditor(shortcode);
         dialog.remove();
       };
       
@@ -213,12 +298,46 @@ hide-in-nav: true
       };
     }
     
+    function insertToEditor(text) {
+      if (currentEditor) {
+        var cm = currentEditor.cmEditor || currentEditor;
+        if (cm && cm.replaceSelection) {
+          cm.replaceSelection(text);
+        } else if (cm && cm.dispatch && cm.state) {
+          var pos = cm.state.selection.main.to;
+          cm.dispatch({
+            changes: { from: pos, insert: text },
+            selection: { anchor: pos + text.length }
+          });
+        } else if (currentEditor.value !== undefined) {
+          var start = currentEditor.selectionStart;
+          var end = currentEditor.selectionEnd;
+          currentEditor.value = currentEditor.value.substring(0, start) + text + currentEditor.value.substring(end);
+          currentEditor.selectionStart = currentEditor.selectionEnd = start + text.length;
+          currentEditor.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+    }
+    
+    function findAndAttachEditor() {
+      var editors = document.querySelectorAll('.cm-editor, textarea[class*="markdown"], textarea[class*="Markdown"]');
+      editors.forEach(function(editor) {
+        if (!editor.dataset.customToolbarAttached) {
+          currentEditor = editor;
+          editor.dataset.customToolbarAttached = 'true';
+        }
+      });
+    }
+    
     function addCustomToolbar() {
-      var markdownFields = document.querySelectorAll('[class*="Markdown"], [class*="markdown"]');
+      var containers = document.querySelectorAll('[class*="Control"], [class*="control"], .nc-control');
       
-      markdownFields.forEach(function(field) {
-        var container = field.closest('.nc-control') || field.closest('[class*="Control"]');
-        if (!container || container.dataset.toolbarAdded) return;
+      containers.forEach(function(container) {
+        if (container.dataset.toolbarAdded) return;
+        
+        var hasMarkdown = container.querySelector('.cm-editor, [class*="markdown"], [class*="Markdown"], textarea');
+        if (!hasMarkdown) return;
+        
         container.dataset.toolbarAdded = 'true';
         
         var toolbar = document.createElement('div');
@@ -227,25 +346,23 @@ hide-in-nav: true
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'custom-image-btn';
-        btn.textContent = '📷 插入高级图片';
+        btn.innerHTML = '📷 插入图片';
         btn.onclick = function(e) {
           e.preventDefault();
+          e.stopPropagation();
+          findAndAttachEditor();
           createImageDialog();
         };
         
         toolbar.appendChild(btn);
         container.insertBefore(toolbar, container.firstChild);
-        
-        var editor = container.querySelector('.cm-editor') || container.querySelector('textarea');
-        if (editor) {
-          currentEditor = editor;
-        }
       });
     }
     
     function observeDOM() {
       var observer = new MutationObserver(function(mutations) {
         addCustomToolbar();
+        findAndAttachEditor();
       });
       
       observer.observe(document.body, {
@@ -260,67 +377,84 @@ hide-in-nav: true
         handler: function() {
           setTimeout(function() {
             addCustomToolbar();
+            findAndAttachEditor();
             observeDOM();
-          }, 1000);
+          }, 500);
         }
       });
       
       CMS.registerEventListener({
         name: 'change',
         handler: function() {
-          setTimeout(addCustomToolbar, 500);
+          setTimeout(function() {
+            addCustomToolbar();
+            findAndAttachEditor();
+          }, 200);
         }
       });
       
       CMS.registerPreviewStyle('/css/hux-blog.css');
       
-      var h = CMS.h || React.createElement;
-      var createClass = CMS.createClass || React.createClass || function(obj) {
-        return function(props) {
-          var self = { props: props };
-          for (var key in obj) {
-            if (typeof obj[key] === 'function') {
-              self[key] = obj[key].bind(self);
-            }
-          }
-          return self.render();
-        };
-      };
+      var h = CMS.h || (typeof React !== 'undefined' ? React.createElement : null);
       
-      var includePattern = new RegExp('\\{\\%\\s*include\\s+post_image\\.html\\s+([^\\%]+)\\s*\\%\\}', 'g');
-      
-      CMS.registerPreviewTemplate('posts', createClass({
-        render: function() {
-          var entry = this.props.entry;
+      if (h) {
+        CMS.registerPreviewTemplate('posts', function(props) {
+          var entry = props.entry;
           var body = entry.getIn(['data', 'body']) || '';
           
-          body = body.replace(includePattern, function(match, params) {
-            var srcMatch = params.match(/src="([^"]+)"/);
-            var altMatch = params.match(/alt="([^"]*)"/);
-            var sizeMatch = params.match(/size="([^"]+)"/);
-            var alignMatch = params.match(/align="([^"]+)"/);
-            
-            var src = srcMatch ? srcMatch[1] : '';
-            var alt = altMatch ? altMatch[1] : '';
-            var size = sizeMatch ? sizeMatch[1] : 'medium';
-            var align = alignMatch ? alignMatch[1] : 'center';
-            
-            var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
-            var maxWidth = sizeMap[size] || '400px';
-            
-            var alignStyle = align === 'center' ? 'text-align: center;' : 
-                            align === 'left' ? 'float: left; margin-right: 16px;' : 
-                            'float: right; margin-left: 16px;';
-            
-            return '<figure class="preview-post-image" style="' + alignStyle + ' max-width: ' + maxWidth + ';">' +
-                   '<img src="' + src + '" alt="' + alt + '" style="max-width: 100%;">' +
-                   (alt ? '<figcaption>' + alt + '</figcaption>' : '') +
-                   '</figure>';
+          var includePattern = new RegExp('\\{\\%\\s*include\\s+(post_image|image_row)\\.html\\s+([^\\%]+)\\s*\\%\\}', 'g');
+          
+          body = body.replace(includePattern, function(match, type, params) {
+            if (type === 'post_image') {
+              var srcMatch = params.match(/src="([^"]+)"/);
+              var altMatch = params.match(/alt="([^"]*)"/);
+              var sizeMatch = params.match(/size="([^"]+)"/);
+              var alignMatch = params.match(/align="([^"]+)"/);
+              
+              var src = srcMatch ? srcMatch[1] : '';
+              var alt = altMatch ? altMatch[1] : '';
+              var size = sizeMatch ? sizeMatch[1] : 'medium';
+              var align = alignMatch ? alignMatch[1] : 'center';
+              
+              var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
+              var maxWidth = sizeMap[size] || '400px';
+              
+              var alignStyle = align === 'center' ? 'text-align: center;' : 
+                              align === 'left' ? 'float: left; margin-right: 16px;' : 
+                              'float: right; margin-left: 16px;';
+              
+              return '<figure style="' + alignStyle + ' max-width: ' + maxWidth + '; margin: 16px 0;">' +
+                     '<img src="' + src + '" alt="' + alt + '" style="max-width: 100%; border-radius: 4px;">' +
+                     (alt ? '<figcaption style="font-size: 13px; color: #666; margin-top: 8px;">' + alt + '</figcaption>' : '') +
+                     '</figure>';
+            } else if (type === 'image_row') {
+              var countMatch = params.match(/count="([^"]+)"/);
+              var imagesMatch = params.match(/images="([^"]+)"/);
+              var count = countMatch ? countMatch[1] : '3';
+              var imagesStr = imagesMatch ? imagesMatch[1] : '';
+              
+              var images = imagesStr.split(',').map(function(img) {
+                var parts = img.split('|');
+                return { src: parts[0] || '', alt: parts[1] || '' };
+              }).filter(function(img) { return img.src; });
+              
+              var widthPercent = Math.floor(100 / parseInt(count)) - 2;
+              var html = '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;">';
+              images.forEach(function(img) {
+                html += '<div style="flex: 1 1 ' + widthPercent + '%; min-width: 150px; text-align: center;">' +
+                        '<img src="' + img.src + '" alt="' + img.alt + '" style="max-width: 100%; border-radius: 4px;">' +
+                        (img.alt ? '<p style="font-size: 12px; color: #666; margin: 4px 0 0;">' + img.alt + '</p>' : '') +
+                        '</div>';
+              });
+              html += '</div>';
+              return html;
+            }
+            return match;
           });
           
           return h('div', { dangerouslySetInnerHTML: { __html: body } });
-        }
-      }));
+        });
+      }
     }
   </script>
   {% endraw %}
