@@ -1,0 +1,18 @@
+{% assign src = include.src %}
+{% assign alt = include.alt | default: "" %}
+{% assign size = include.size | default: "medium" %}
+{% assign align = include.align | default: "center" %}
+{% assign mode = include.mode | default: "normal" %}
+
+<figure class="post-image post-image-{{ size }} post-image-{{ align }}{% if mode == 'thumbnail' %} post-image-thumbnail{% endif %}">
+  {% if mode == 'thumbnail' %}
+  <a href="{{ src | prepend: site.baseurl }}" class="lightbox-trigger" data-lightbox="post-images" data-title="{{ alt }}">
+    <img src="{{ src | prepend: site.baseurl }}" alt="{{ alt }}" loading="lazy">
+  </a>
+  {% else %}
+  <img src="{{ src | prepend: site.baseurl }}" alt="{{ alt }}" loading="lazy">
+  {% endif %}
+  {% if alt != "" and align == "center" %}
+  <figcaption>{{ alt }}</figcaption>
+  {% endif %}
+</figure>
