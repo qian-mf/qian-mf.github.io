@@ -197,3 +197,37 @@ layout: default
     }
 </style>
 {% endif %}
+
+<!-- Lightbox for post images -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var triggers = document.querySelectorAll('.lightbox-trigger');
+    triggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            var href = this.getAttribute('href');
+            var title = this.getAttribute('data-title') || '';
+            
+            var overlay = document.createElement('div');
+            overlay.className = 'lightbox-overlay';
+            overlay.innerHTML = '<span class="lightbox-close">&times;</span><img src="' + href + '" alt="' + title + '">';
+            
+            document.body.appendChild(overlay);
+            document.body.style.overflow = 'hidden';
+            
+            overlay.addEventListener('click', function() {
+                this.remove();
+                document.body.style.overflow = '';
+            });
+            
+            document.addEventListener('keydown', function escHandler(e) {
+                if (e.key === 'Escape') {
+                    overlay.remove();
+                    document.body.style.overflow = '';
+                    document.removeEventListener('keydown', escHandler);
+                }
+            });
+        });
+    });
+});
+</script>
