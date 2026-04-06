@@ -2016,3 +2016,92 @@ img::-moz-selection {
 .hidden-admin-btn:hover {
   background: rgba(0, 47, 167, 0.2);
 }
+
+/* Post Image Styles */
+.post-image {
+  margin: 20px 0;
+}
+.post-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.post-image figcaption {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* Image Sizes */
+.post-image-small img { max-width: 200px; }
+.post-image-medium img { max-width: 400px; }
+.post-image-large img { max-width: 600px; }
+.post-image-full img { width: 100%; }
+
+/* Image Alignment */
+.post-image-center {
+  text-align: center;
+  clear: both;
+}
+.post-image-left {
+  float: left;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+.post-image-right {
+  float: right;
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+/* Thumbnail Mode */
+.post-image-thumbnail img {
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.post-image-thumbnail:hover img {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* Lightbox */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.lightbox-overlay img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+  z-index: 100000;
+}
+.lightbox-close:hover {
+  color: #ccc;
+}
+
+/* Clear floats after post content */
+.post-container::after {
+  content: "";
+  display: table;
+  clear: both;
+}
