@@ -11,23 +11,30 @@ hide-in-nav: true
   <title>星川廬 - 内容管理</title>
   <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css" />
   <style>
-    .cms-editor-ctrl textarea {
-      tab-size: 4;
-    }
-    
     .custom-image-btn {
-      display: inline-block;
-      padding: 8px 16px;
-      margin: 8px 4px;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      margin: 4px;
       background: #002FA7;
-      color: white;
+      color: white !important;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 500;
     }
     .custom-image-btn:hover {
       background: #001d6b;
+    }
+    
+    .custom-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 8px;
+      background: #f7f7f7;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 8px;
     }
     
     .image-dialog {
@@ -36,130 +43,106 @@ hide-in-nav: true
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 10000;
+      z-index: 99999;
     }
     .image-dialog-content {
       background: white;
       padding: 24px;
       border-radius: 8px;
-      max-width: 500px;
+      max-width: 450px;
       width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
     .image-dialog-content h3 {
-      margin-top: 0;
-      margin-bottom: 16px;
+      margin: 0 0 16px 0;
+      color: #333;
     }
     .image-dialog-content label {
       display: block;
       margin-bottom: 4px;
       font-weight: 500;
+      color: #555;
     }
     .image-dialog-content input,
     .image-dialog-content select {
       width: 100%;
-      padding: 8px;
+      padding: 8px 10px;
       margin-bottom: 12px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
+      font-size: 14px;
     }
     .image-dialog-content .btn-group {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       margin-top: 16px;
     }
     .image-dialog-content button {
       flex: 1;
-      padding: 10px;
+      padding: 10px 16px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
     }
     .image-dialog-content .btn-primary {
       background: #002FA7;
       color: white;
     }
+    .image-dialog-content .btn-primary:hover {
+      background: #001d6b;
+    }
     .image-dialog-content .btn-secondary {
-      background: #ccc;
+      background: #e0e0e0;
       color: #333;
     }
-    
-    .preview-image {
-      margin: 16px 0;
+    .image-dialog-content .btn-secondary:hover {
+      background: #ccc;
     }
-    .preview-image img {
+    
+    .preview-post-image {
+      margin: 16px 0;
+      padding: 12px;
+      background: #f0f7ff;
+      border: 1px dashed #002FA7;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .preview-post-image img {
       max-width: 100%;
       border-radius: 4px;
     }
-    .preview-image.align-left {
-      float: left;
-      margin-right: 16px;
-      margin-bottom: 8px;
-    }
-    .preview-image.align-right {
-      float: right;
-      margin-left: 16px;
-      margin-bottom: 8px;
-    }
-    .preview-image.size-small img { max-width: 200px; }
-    .preview-image.size-medium img { max-width: 400px; }
-    .preview-image.size-large img { max-width: 600px; }
-    .preview-image.size-full img { width: 100%; }
-    .preview-image.thumbnail img {
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .preview-image.thumbnail:hover img {
-      transform: scale(1.02);
+    .preview-post-image figcaption {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #666;
     }
   </style>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script>
-    var ready = false;
+    var currentEditor = null;
     
-    function setupTabIndent() {
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-          var textarea = document.querySelector('.cms-editor-ctrl textarea, .ProseMirror');
-          if (textarea && document.activeElement === textarea) {
-            e.preventDefault();
-            var start = textarea.selectionStart;
-            var end = textarea.selectionEnd;
-            var value = textarea.value;
-            var lineStart = value.lastIndexOf('\n', start - 1) + 1;
-            var isLineStart = (start === lineStart);
-            
-            if (isLineStart) {
-              textarea.value = value.substring(0, start) + '　　' + value.substring(end);
-              textarea.selectionStart = textarea.selectionEnd = start + 2;
-            } else {
-              textarea.value = value.substring(0, start) + '    ' + value.substring(end);
-              textarea.selectionStart = textarea.selectionEnd = start + 4;
-            }
-            textarea.dispatchEvent(new Event('input', { bubbles: true }));
-          }
-        }
-      });
-    }
-    
-    function createImageDialog(textarea) {
+    function createImageDialog() {
+      var existing = document.querySelector('.image-dialog');
+      if (existing) existing.remove();
+      
       var dialog = document.createElement('div');
       dialog.className = 'image-dialog';
       dialog.innerHTML = '\
         <div class="image-dialog-content">\
-          <h3>插入图片</h3>\
-          <label>图片地址</label>\
+          <h3>插入高级图片</h3>\
+          <label>图片地址 *</label>\
           <input type="text" id="img-src" placeholder="/img/uploads/example.jpg">\
           <label>图片描述</label>\
-          <input type="text" id="img-alt" placeholder="图片描述">\
+          <input type="text" id="img-alt" placeholder="图片描述（可选）">\
           <label>图片大小</label>\
           <select id="img-size">\
             <option value="small">小 (200px)</option>\
@@ -179,49 +162,92 @@ hide-in-nav: true
             <option value="thumbnail">缩略图（点击放大）</option>\
           </select>\
           <div class="btn-group">\
-            <button class="btn-secondary" onclick="this.closest(\'.image-dialog\').remove()">取消</button>\
+            <button class="btn-secondary" id="cancel-btn">取消</button>\
             <button class="btn-primary" id="insert-btn">插入</button>\
           </div>\
         </div>';
       
       document.body.appendChild(dialog);
       
+      document.getElementById('cancel-btn').onclick = function() {
+        dialog.remove();
+      };
+      
       document.getElementById('insert-btn').onclick = function() {
-        var src = document.getElementById('img-src').value;
-        var alt = document.getElementById('img-alt').value;
+        var src = document.getElementById('img-src').value.trim();
+        if (!src) {
+          alert('请输入图片地址');
+          return;
+        }
+        
+        var alt = document.getElementById('img-alt').value.trim();
         var size = document.getElementById('img-size').value;
         var align = document.getElementById('img-align').value;
         var mode = document.getElementById('img-mode').value;
         
-        var shortcode = '{% include post_image.html src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '" %}';
+        var shortcode = '\n{% include post_image.html src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '" %}\n';
         
-        var start = textarea.selectionStart;
-        var end = textarea.selectionEnd;
-        textarea.value = textarea.value.substring(0, start) + shortcode + textarea.value.substring(end);
-        textarea.selectionStart = textarea.selectionEnd = start + shortcode.length;
-        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        if (currentEditor) {
+          var cm = currentEditor.cmEditor || currentEditor;
+          if (cm && cm.replaceSelection) {
+            cm.replaceSelection(shortcode);
+          } else if (cm && cm.dispatch) {
+            var pos = cm.state.selection.main.to;
+            cm.dispatch({
+              changes: { from: pos, insert: shortcode },
+              selection: { anchor: pos + shortcode.length }
+            });
+          }
+        }
         
         dialog.remove();
       };
+      
+      dialog.onclick = function(e) {
+        if (e.target === dialog) {
+          dialog.remove();
+        }
+      };
     }
     
-    function addImageToolbar() {
-      var textareas = document.querySelectorAll('.cms-editor-ctrl textarea');
-      textareas.forEach(function(textarea) {
-        if (textarea.dataset.imageToolbarAdded) return;
-        textarea.dataset.imageToolbarAdded = 'true';
+    function addCustomToolbar() {
+      var markdownFields = document.querySelectorAll('[class*="Markdown"], [class*="markdown"]');
+      
+      markdownFields.forEach(function(field) {
+        var container = field.closest('.nc-control') || field.closest('[class*="Control"]');
+        if (!container || container.dataset.toolbarAdded) return;
+        container.dataset.toolbarAdded = 'true';
         
         var toolbar = document.createElement('div');
-        toolbar.style.marginTop = '8px';
+        toolbar.className = 'custom-toolbar';
         
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'custom-image-btn';
-        btn.textContent = '插入高级图片';
-        btn.onclick = function() { createImageDialog(textarea); };
+        btn.textContent = '📷 插入高级图片';
+        btn.onclick = function(e) {
+          e.preventDefault();
+          createImageDialog();
+        };
         
         toolbar.appendChild(btn);
-        textarea.parentNode.insertBefore(toolbar, textarea.nextSibling);
+        container.insertBefore(toolbar, container.firstChild);
+        
+        var editor = container.querySelector('.cm-editor') || container.querySelector('textarea');
+        if (editor) {
+          currentEditor = editor;
+        }
+      });
+    }
+    
+    function observeDOM() {
+      var observer = new MutationObserver(function(mutations) {
+        addCustomToolbar();
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
       });
     }
     
@@ -229,17 +255,67 @@ hide-in-nav: true
       CMS.registerEventListener({
         name: 'mounted',
         handler: function() {
-          setupTabIndent();
-          setTimeout(addImageToolbar, 500);
+          setTimeout(function() {
+            addCustomToolbar();
+            observeDOM();
+          }, 1000);
         }
       });
       
       CMS.registerEventListener({
         name: 'change',
         handler: function() {
-          setTimeout(addImageToolbar, 100);
+          setTimeout(addCustomToolbar, 500);
         }
       });
+      
+      CMS.registerPreviewStyle('/css/hux-blog.css');
+      
+      var h = CMS.h || React.createElement;
+      var createClass = CMS.createClass || React.createClass || function(obj) {
+        return function(props) {
+          var self = { props: props };
+          for (var key in obj) {
+            if (typeof obj[key] === 'function') {
+              self[key] = obj[key].bind(self);
+            }
+          }
+          return self.render();
+        };
+      };
+      
+      CMS.registerPreviewTemplate('posts', createClass({
+        render: function() {
+          var entry = this.props.entry;
+          var body = entry.getIn(['data', 'body']) || '';
+          
+          body = body.replace(/{%\s*include\s+post_image\.html\s+([^%]+)\s*%}/g, function(match, params) {
+            var srcMatch = params.match(/src="([^"]+)"/);
+            var altMatch = params.match(/alt="([^"]*)"/);
+            var sizeMatch = params.match(/size="([^"]+)"/);
+            var alignMatch = params.match(/align="([^"]+)"/);
+            
+            var src = srcMatch ? srcMatch[1] : '';
+            var alt = altMatch ? altMatch[1] : '';
+            var size = sizeMatch ? sizeMatch[1] : 'medium';
+            var align = alignMatch ? alignMatch[1] : 'center';
+            
+            var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
+            var maxWidth = sizeMap[size] || '400px';
+            
+            var alignStyle = align === 'center' ? 'text-align: center;' : 
+                            align === 'left' ? 'float: left; margin-right: 16px;' : 
+                            'float: right; margin-left: 16px;';
+            
+            return '<figure class="preview-post-image" style="' + alignStyle + ' max-width: ' + maxWidth + ';">' +
+                   '<img src="' + src + '" alt="' + alt + '" style="max-width: 100%;">' +
+                   (alt ? '<figcaption>' + alt + '</figcaption>' : '') +
+                   '</figure>';
+          });
+          
+          return h('div', { dangerouslySetInnerHTML: { __html: body } });
+        }
+      }));
     }
   </script>
 </body>
