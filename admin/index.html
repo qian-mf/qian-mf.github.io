@@ -127,8 +127,11 @@ hide-in-nav: true
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  {% raw %}
   <script>
     var currentEditor = null;
+    var includeTagStart = '{%' + ' include post_image.html ';
+    var includeTagEnd = ' %' + '}';
     
     function createImageDialog() {
       var existing = document.querySelector('.image-dialog');
@@ -185,7 +188,7 @@ hide-in-nav: true
         var align = document.getElementById('img-align').value;
         var mode = document.getElementById('img-mode').value;
         
-        var shortcode = '\n{% include post_image.html src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '" %}\n';
+        var shortcode = '\n' + includeTagStart + 'src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '"' + includeTagEnd + '\n';
         
         if (currentEditor) {
           var cm = currentEditor.cmEditor || currentEditor;
@@ -284,12 +287,14 @@ hide-in-nav: true
         };
       };
       
+      var includePattern = new RegExp('\\{\\%\\s*include\\s+post_image\\.html\\s+([^\\%]+)\\s*\\%\\}', 'g');
+      
       CMS.registerPreviewTemplate('posts', createClass({
         render: function() {
           var entry = this.props.entry;
           var body = entry.getIn(['data', 'body']) || '';
           
-          body = body.replace(/{%\s*include\s+post_image\.html\s+([^%]+)\s*%}/g, function(match, params) {
+          body = body.replace(includePattern, function(match, params) {
             var srcMatch = params.match(/src="([^"]+)"/);
             var altMatch = params.match(/alt="([^"]*)"/);
             var sizeMatch = params.match(/size="([^"]+)"/);
@@ -318,5 +323,6 @@ hide-in-nav: true
       }));
     }
   </script>
+  {% endraw %}
 </body>
 </html>
