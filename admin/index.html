@@ -14,6 +14,110 @@ hide-in-nav: true
     .cms-editor-ctrl textarea {
       tab-size: 4;
     }
+    
+    .custom-image-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      margin: 8px 4px;
+      background: #002FA7;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .custom-image-btn:hover {
+      background: #001d6b;
+    }
+    
+    .image-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    .image-dialog-content {
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .image-dialog-content h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    .image-dialog-content label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .image-dialog-content input,
+    .image-dialog-content select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .image-dialog-content .btn-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .image-dialog-content button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .image-dialog-content .btn-primary {
+      background: #002FA7;
+      color: white;
+    }
+    .image-dialog-content .btn-secondary {
+      background: #ccc;
+      color: #333;
+    }
+    
+    .preview-image {
+      margin: 16px 0;
+    }
+    .preview-image img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+    .preview-image.align-left {
+      float: left;
+      margin-right: 16px;
+      margin-bottom: 8px;
+    }
+    .preview-image.align-right {
+      float: right;
+      margin-left: 16px;
+      margin-bottom: 8px;
+    }
+    .preview-image.size-small img { max-width: 200px; }
+    .preview-image.size-medium img { max-width: 400px; }
+    .preview-image.size-large img { max-width: 600px; }
+    .preview-image.size-full img { width: 100%; }
+    .preview-image.thumbnail img {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .preview-image.thumbnail:hover img {
+      transform: scale(1.02);
+    }
   </style>
 </head>
 <body>
@@ -46,10 +150,95 @@ hide-in-nav: true
       });
     }
     
+    function createImageDialog(textarea) {
+      var dialog = document.createElement('div');
+      dialog.className = 'image-dialog';
+      dialog.innerHTML = '\
+        <div class="image-dialog-content">\
+          <h3>插入图片</h3>\
+          <label>图片地址</label>\
+          <input type="text" id="img-src" placeholder="/img/uploads/example.jpg">\
+          <label>图片描述</label>\
+          <input type="text" id="img-alt" placeholder="图片描述">\
+          <label>图片大小</label>\
+          <select id="img-size">\
+            <option value="small">小 (200px)</option>\
+            <option value="medium" selected>中 (400px)</option>\
+            <option value="large">大 (600px)</option>\
+            <option value="full">全宽</option>\
+          </select>\
+          <label>图片位置</label>\
+          <select id="img-align">\
+            <option value="center" selected>居中</option>\
+            <option value="left">左对齐（文字环绕）</option>\
+            <option value="right">右对齐（文字环绕）</option>\
+          </select>\
+          <label>显示模式</label>\
+          <select id="img-mode">\
+            <option value="normal" selected>普通显示</option>\
+            <option value="thumbnail">缩略图（点击放大）</option>\
+          </select>\
+          <div class="btn-group">\
+            <button class="btn-secondary" onclick="this.closest(\'.image-dialog\').remove()">取消</button>\
+            <button class="btn-primary" id="insert-btn">插入</button>\
+          </div>\
+        </div>';
+      
+      document.body.appendChild(dialog);
+      
+      document.getElementById('insert-btn').onclick = function() {
+        var src = document.getElementById('img-src').value;
+        var alt = document.getElementById('img-alt').value;
+        var size = document.getElementById('img-size').value;
+        var align = document.getElementById('img-align').value;
+        var mode = document.getElementById('img-mode').value;
+        
+        var shortcode = '{% include post_image.html src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '" %}';
+        
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        textarea.value = textarea.value.substring(0, start) + shortcode + textarea.value.substring(end);
+        textarea.selectionStart = textarea.selectionEnd = start + shortcode.length;
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        
+        dialog.remove();
+      };
+    }
+    
+    function addImageToolbar() {
+      var textareas = document.querySelectorAll('.cms-editor-ctrl textarea');
+      textareas.forEach(function(textarea) {
+        if (textarea.dataset.imageToolbarAdded) return;
+        textarea.dataset.imageToolbarAdded = 'true';
+        
+        var toolbar = document.createElement('div');
+        toolbar.style.marginTop = '8px';
+        
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'custom-image-btn';
+        btn.textContent = '插入高级图片';
+        btn.onclick = function() { createImageDialog(textarea); };
+        
+        toolbar.appendChild(btn);
+        textarea.parentNode.insertBefore(toolbar, textarea.nextSibling);
+      });
+    }
+    
     if (typeof CMS !== 'undefined') {
       CMS.registerEventListener({
         name: 'mounted',
-        handler: setupTabIndent
+        handler: function() {
+          setupTabIndent();
+          setTimeout(addImageToolbar, 500);
+        }
+      });
+      
+      CMS.registerEventListener({
+        name: 'change',
+        handler: function() {
+          setTimeout(addImageToolbar, 100);
+        }
       });
     }
   </script>
