@@ -14,15 +14,16 @@ hide-in-nav: true
     .custom-image-btn {
       display: inline-flex;
       align-items: center;
-      padding: 6px 12px;
-      margin: 4px;
+      padding: 8px 16px;
+      margin: 8px;
       background: #002FA7;
       color: white !important;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     .custom-image-btn:hover {
       background: #001d6b;
@@ -31,13 +32,13 @@ hide-in-nav: true
     .custom-toolbar {
       display: flex;
       flex-wrap: wrap;
-      padding: 8px;
-      background: #f7f7f7;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 8px;
+      padding: 12px;
+      background: linear-gradient(to bottom, #f0f0f0, #e8e8e8);
+      border-bottom: 2px solid #002FA7;
+      margin-bottom: 12px;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
     }
     
     .image-dialog {
@@ -46,7 +47,7 @@ hide-in-nav: true
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.7);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -54,47 +55,57 @@ hide-in-nav: true
     }
     .image-dialog-content {
       background: white;
-      padding: 24px;
-      border-radius: 8px;
-      max-width: 500px;
+      padding: 28px;
+      border-radius: 12px;
+      max-width: 520px;
       width: 90%;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
       max-height: 90vh;
       overflow-y: auto;
     }
     .image-dialog-content h3 {
-      margin: 0 0 16px 0;
-      color: #333;
+      margin: 0 0 20px 0;
+      color: #002FA7;
+      font-size: 20px;
+      border-bottom: 2px solid #002FA7;
+      padding-bottom: 10px;
     }
     .image-dialog-content label {
       display: block;
-      margin-bottom: 4px;
-      font-weight: 500;
-      color: #555;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
     }
     .image-dialog-content input,
     .image-dialog-content select {
       width: 100%;
-      padding: 8px 10px;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
       box-sizing: border-box;
       font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    .image-dialog-content input:focus,
+    .image-dialog-content select:focus {
+      border-color: #002FA7;
+      outline: none;
     }
     .image-dialog-content .btn-group {
       display: flex;
-      gap: 10px;
-      margin-top: 16px;
+      gap: 12px;
+      margin-top: 20px;
     }
     .image-dialog-content button {
       flex: 1;
-      padding: 10px 16px;
+      padding: 12px 20px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 15px;
+      font-weight: 600;
     }
     .image-dialog-content .btn-primary {
       background: #002FA7;
@@ -114,12 +125,12 @@ hide-in-nav: true
     .image-row-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px;
+      gap: 10px;
+      padding: 12px;
       background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 8px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
     .image-row-item input {
       flex: 1;
@@ -129,19 +140,22 @@ hide-in-nav: true
       background: #dc3545;
       color: white;
       border: none;
-      border-radius: 4px;
-      padding: 6px 10px;
+      border-radius: 6px;
+      padding: 8px 14px;
       cursor: pointer;
+      font-weight: 600;
     }
     
     .add-image-btn {
       background: #28a745;
       color: white;
       border: none;
-      border-radius: 4px;
-      padding: 8px 16px;
+      border-radius: 6px;
+      padding: 10px 20px;
       cursor: pointer;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      font-weight: 600;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -150,6 +164,7 @@ hide-in-nav: true
   {% raw %}
   <script>
     var currentEditor = null;
+    var toolbarInjected = false;
     var includeTagStart = '{%' + ' include post_image.html ';
     var includeTagEnd = ' %' + '}';
     
@@ -161,7 +176,7 @@ hide-in-nav: true
       dialog.className = 'image-dialog';
       dialog.innerHTML = '\
         <div class="image-dialog-content">\
-          <h3>插入图片</h3>\
+          <h3>📷 插入图片</h3>\
           <label>显示模式</label>\
           <select id="img-display-mode">\
             <option value="single">单张图片</option>\
@@ -222,6 +237,7 @@ hide-in-nav: true
           singleSection.style.display = 'none';
           rowSection.style.display = 'block';
           if (imageRowList.children.length === 0) {
+            addRowImageItem();
             addRowImageItem();
           }
         }
@@ -299,16 +315,19 @@ hide-in-nav: true
     }
     
     function insertToEditor(text) {
-      if (currentEditor) {
-        var cm = currentEditor.cmEditor || currentEditor;
-        if (cm && cm.replaceSelection) {
-          cm.replaceSelection(text);
-        } else if (cm && cm.dispatch && cm.state) {
-          var pos = cm.state.selection.main.to;
-          cm.dispatch({
-            changes: { from: pos, insert: text },
-            selection: { anchor: pos + text.length }
-          });
+      var cm = document.querySelector('.cm-editor');
+      if (cm && cm.CodeMirror) {
+        cm.CodeMirror.replaceSelection(text);
+      } else if (cm && cm.view) {
+        var view = cm.view;
+        var pos = view.state.selection.main.to;
+        view.dispatch({
+          changes: { from: pos, insert: text },
+          selection: { anchor: pos + text.length }
+        });
+      } else if (currentEditor) {
+        if (currentEditor.CodeMirror) {
+          currentEditor.CodeMirror.replaceSelection(text);
         } else if (currentEditor.value !== undefined) {
           var start = currentEditor.selectionStart;
           var end = currentEditor.selectionEnd;
@@ -319,27 +338,60 @@ hide-in-nav: true
       }
     }
     
-    function findAndAttachEditor() {
-      var editors = document.querySelectorAll('.cm-editor, textarea[class*="markdown"], textarea[class*="Markdown"]');
-      editors.forEach(function(editor) {
-        if (!editor.dataset.customToolbarAttached) {
-          currentEditor = editor;
-          editor.dataset.customToolbarAttached = 'true';
+    function findEditor() {
+      var selectors = [
+        '.cm-editor',
+        '[class*="CodeMirror"]',
+        '[class*="markdown"]',
+        'textarea[name="body"]',
+        'textarea'
+      ];
+      
+      for (var i = 0; i < selectors.length; i++) {
+        var el = document.querySelector(selectors[i]);
+        if (el) {
+          currentEditor = el;
+          return true;
         }
-      });
+      }
+      return false;
     }
     
-    function addCustomToolbar() {
-      var containers = document.querySelectorAll('[class*="Control"], [class*="control"], .nc-control');
+    function injectToolbar() {
+      if (toolbarInjected) return;
       
-      containers.forEach(function(container) {
-        if (container.dataset.toolbarAdded) return;
-        
-        var hasMarkdown = container.querySelector('.cm-editor, [class*="markdown"], [class*="Markdown"], textarea');
-        if (!hasMarkdown) return;
-        
-        container.dataset.toolbarAdded = 'true';
-        
+      var targetSelectors = [
+        '[class*="MarkdownControl"]',
+        '[class*="markdown-control"]',
+        '[class*="Widget"]',
+        '.nc-control',
+        '[class*="Control"]'
+      ];
+      
+      var container = null;
+      for (var i = 0; i < targetSelectors.length; i++) {
+        var el = document.querySelector(targetSelectors[i]);
+        if (el && el.querySelector('.cm-editor, textarea, [class*="editor"]')) {
+          container = el;
+          break;
+        }
+      }
+      
+      if (!container) {
+        var cmEditor = document.querySelector('.cm-editor');
+        if (cmEditor) {
+          container = cmEditor.closest('[class*="Control"], [class*="Widget"], div');
+        }
+      }
+      
+      if (!container) {
+        var textarea = document.querySelector('textarea[name="body"]');
+        if (textarea) {
+          container = textarea.parentElement;
+        }
+      }
+      
+      if (container && !container.querySelector('.custom-toolbar')) {
         var toolbar = document.createElement('div');
         toolbar.className = 'custom-toolbar';
         
@@ -350,19 +402,25 @@ hide-in-nav: true
         btn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
-          findAndAttachEditor();
+          findEditor();
           createImageDialog();
         };
         
         toolbar.appendChild(btn);
         container.insertBefore(toolbar, container.firstChild);
-      });
+        toolbarInjected = true;
+        console.log('Toolbar injected successfully!');
+      }
+    }
+    
+    function init() {
+      findEditor();
+      injectToolbar();
     }
     
     function observeDOM() {
       var observer = new MutationObserver(function(mutations) {
-        addCustomToolbar();
-        findAndAttachEditor();
+        init();
       });
       
       observer.observe(document.body, {
@@ -371,91 +429,83 @@ hide-in-nav: true
       });
     }
     
-    if (typeof CMS !== 'undefined') {
-      CMS.registerEventListener({
-        name: 'mounted',
-        handler: function() {
-          setTimeout(function() {
-            addCustomToolbar();
-            findAndAttachEditor();
-            observeDOM();
-          }, 500);
-        }
-      });
-      
-      CMS.registerEventListener({
-        name: 'change',
-        handler: function() {
-          setTimeout(function() {
-            addCustomToolbar();
-            findAndAttachEditor();
-          }, 200);
-        }
-      });
-      
-      CMS.registerPreviewStyle('/css/hux-blog.css');
-      
-      var h = CMS.h || (typeof React !== 'undefined' ? React.createElement : null);
-      
-      if (h) {
-        CMS.registerPreviewTemplate('posts', function(props) {
-          var entry = props.entry;
-          var body = entry.getIn(['data', 'body']) || '';
-          
-          var includePattern = new RegExp('\\{\\%\\s*include\\s+(post_image|image_row)\\.html\\s+([^\\%]+)\\s*\\%\\}', 'g');
-          
-          body = body.replace(includePattern, function(match, type, params) {
-            if (type === 'post_image') {
-              var srcMatch = params.match(/src="([^"]+)"/);
-              var altMatch = params.match(/alt="([^"]*)"/);
-              var sizeMatch = params.match(/size="([^"]+)"/);
-              var alignMatch = params.match(/align="([^"]+)"/);
-              
-              var src = srcMatch ? srcMatch[1] : '';
-              var alt = altMatch ? altMatch[1] : '';
-              var size = sizeMatch ? sizeMatch[1] : 'medium';
-              var align = alignMatch ? alignMatch[1] : 'center';
-              
-              var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
-              var maxWidth = sizeMap[size] || '400px';
-              
-              var alignStyle = align === 'center' ? 'text-align: center;' : 
-                              align === 'left' ? 'float: left; margin-right: 16px;' : 
-                              'float: right; margin-left: 16px;';
-              
-              return '<figure style="' + alignStyle + ' max-width: ' + maxWidth + '; margin: 16px 0;">' +
-                     '<img src="' + src + '" alt="' + alt + '" style="max-width: 100%; border-radius: 4px;">' +
-                     (alt ? '<figcaption style="font-size: 13px; color: #666; margin-top: 8px;">' + alt + '</figcaption>' : '') +
-                     '</figure>';
-            } else if (type === 'image_row') {
-              var countMatch = params.match(/count="([^"]+)"/);
-              var imagesMatch = params.match(/images="([^"]+)"/);
-              var count = countMatch ? countMatch[1] : '3';
-              var imagesStr = imagesMatch ? imagesMatch[1] : '';
-              
-              var images = imagesStr.split(',').map(function(img) {
-                var parts = img.split('|');
-                return { src: parts[0] || '', alt: parts[1] || '' };
-              }).filter(function(img) { return img.src; });
-              
-              var widthPercent = Math.floor(100 / parseInt(count)) - 2;
-              var html = '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;">';
-              images.forEach(function(img) {
-                html += '<div style="flex: 1 1 ' + widthPercent + '%; min-width: 150px; text-align: center;">' +
-                        '<img src="' + img.src + '" alt="' + img.alt + '" style="max-width: 100%; border-radius: 4px;">' +
-                        (img.alt ? '<p style="font-size: 12px; color: #666; margin: 4px 0 0;">' + img.alt + '</p>' : '') +
-                        '</div>';
-              });
-              html += '</div>';
-              return html;
-            }
-            return match;
-          });
-          
-          return h('div', { dangerouslySetInnerHTML: { __html: body } });
+    CMS.registerPreviewStyle('/css/hux-blog.css');
+    
+    var h = CMS.h || (typeof React !== 'undefined' ? React.createElement : null);
+    
+    if (h) {
+      CMS.registerPreviewTemplate('posts', function(props) {
+        var entry = props.entry;
+        var body = entry.getIn(['data', 'body']) || '';
+        
+        var includePattern = new RegExp('\\{\\%\\s*include\\s+(post_image|image_row)\\.html\\s+([^\\%]+)\\s*\\%\\}', 'g');
+        
+        body = body.replace(includePattern, function(match, type, params) {
+          if (type === 'post_image') {
+            var srcMatch = params.match(/src="([^"]+)"/);
+            var altMatch = params.match(/alt="([^"]*)"/);
+            var sizeMatch = params.match(/size="([^"]+)"/);
+            var alignMatch = params.match(/align="([^"]+)"/);
+            
+            var src = srcMatch ? srcMatch[1] : '';
+            var alt = altMatch ? altMatch[1] : '';
+            var size = sizeMatch ? sizeMatch[1] : 'medium';
+            var align = alignMatch ? alignMatch[1] : 'center';
+            
+            var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
+            var maxWidth = sizeMap[size] || '400px';
+            
+            var alignStyle = align === 'center' ? 'text-align: center;' : 
+                            align === 'left' ? 'float: left; margin-right: 16px;' : 
+                            'float: right; margin-left: 16px;';
+            
+            return '<figure style="' + alignStyle + ' max-width: ' + maxWidth + '; margin: 16px 0;">' +
+                   '<img src="' + src + '" alt="' + alt + '" style="max-width: 100%; border-radius: 4px;">' +
+                   (alt ? '<figcaption style="font-size: 13px; color: #666; margin-top: 8px;">' + alt + '</figcaption>' : '') +
+                   '</figure>';
+          } else if (type === 'image_row') {
+            var countMatch = params.match(/count="([^"]+)"/);
+            var imagesMatch = params.match(/images="([^"]+)"/);
+            var count = countMatch ? countMatch[1] : '3';
+            var imagesStr = imagesMatch ? imagesMatch[1] : '';
+            
+            var images = imagesStr.split(',').map(function(img) {
+              var parts = img.split('|');
+              return { src: parts[0] || '', alt: parts[1] || '' };
+            }).filter(function(img) { return img.src; });
+            
+            var widthPercent = Math.floor(100 / parseInt(count)) - 2;
+            var html = '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;">';
+            images.forEach(function(img) {
+              html += '<div style="flex: 1 1 ' + widthPercent + '%; min-width: 150px; text-align: center;">' +
+                      '<img src="' + img.src + '" alt="' + img.alt + '" style="max-width: 100%; border-radius: 4px;">' +
+                      (img.alt ? '<p style="font-size: 12px; color: #666; margin: 4px 0 0;">' + img.alt + '</p>' : '') +
+                      '</div>';
+            });
+            html += '</div>';
+            return html;
+          }
+          return match;
         });
-      }
+        
+        return h('div', { dangerouslySetInnerHTML: { __html: body } });
+      });
     }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(init, 500);
+      setTimeout(init, 1500);
+      setTimeout(init, 3000);
+      observeDOM();
+    });
+    
+    window.addEventListener('load', function() {
+      setTimeout(init, 100);
+      setTimeout(init, 500);
+      setTimeout(init, 1000);
+      setTimeout(init, 2000);
+      setTimeout(init, 3000);
+    });
   </script>
   {% endraw %}
 </body>
