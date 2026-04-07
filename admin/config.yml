@@ -23,6 +23,8 @@ collections:
   - name: "posts"
     label: "博文"
     folder: "_posts"
+    media_folder: "../img/uploads"
+    public_folder: "/img/uploads"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
@@ -35,7 +37,14 @@ collections:
       - {label: "头部图片", name: "header-img", widget: "image", required: false, allow_multiple: false}
       - {label: "是否显示目录", name: "catalog", widget: "boolean", default: true}
       - {label: "标签", name: "tags", widget: "list", required: false}
-      - {label: "正文", name: "body", widget: "markdown"}
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        editor_components:
+          - "image"
+          - "code-block"
+          - "post-image"
+          - "image-row"
 
   - name: "pages"
     label: "页面"
