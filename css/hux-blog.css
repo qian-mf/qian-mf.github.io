@@ -1784,13 +1784,14 @@ img::-moz-selection {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
-.gallery-item img {
+.portfolio-gallery .gallery-item img {
   width: 100%;
-  height: auto;
+  height: auto !important;
+  max-height: none !important;
   display: block;
   transition: transform 0.3s ease;
 }
-.gallery-item:hover img {
+.portfolio-gallery .gallery-item:hover img {
   transform: scale(1.05);
 }
 .gallery-caption {
