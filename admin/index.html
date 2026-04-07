@@ -163,286 +163,174 @@ hide-in-nav: true
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   {% raw %}
   <script>
-    var includeTagStart = '{%' + ' include post_image.html ';
-    var includeTagEnd = ' %' + '}';
-    
-    function createImageDialog() {
-      var existing = document.querySelector('.image-dialog');
-      if (existing) existing.remove();
-      
-      var dialog = document.createElement('div');
-      dialog.className = 'image-dialog';
-      dialog.innerHTML = '\
-        <div class="image-dialog-content">\
-          <h3>📷 插入图片</h3>\
-          <label>显示模式</label>\
-          <select id="img-display-mode">\
-            <option value="single">单张图片</option>\
-            <option value="row">多图并排（一行多张）</option>\
-          </select>\
-          <div id="single-image-section">\
-            <label>图片地址 *</label>\
-            <input type="text" id="img-src" placeholder="/img/uploads/example.jpg">\
-            <label>图片描述</label>\
-            <input type="text" id="img-alt" placeholder="图片描述（可选）">\
-            <label>图片大小</label>\
-            <select id="img-size">\
-              <option value="small">小 (200px)</option>\
-              <option value="medium" selected>中 (400px)</option>\
-              <option value="large">大 (600px)</option>\
-              <option value="full">全宽</option>\
-            </select>\
-            <label>图片位置</label>\
-            <select id="img-align">\
-              <option value="center" selected>居中</option>\
-              <option value="left">左对齐（文字环绕）</option>\
-              <option value="right">右对齐（文字环绕）</option>\
-            </select>\
-            <label>点击放大</label>\
-            <select id="img-mode">\
-              <option value="normal" selected>否</option>\
-              <option value="thumbnail">是（缩略图模式）</option>\
-            </select>\
-          </div>\
-          <div id="row-image-section" style="display:none;">\
-            <label>每行图片数量</label>\
-            <select id="row-count">\
-              <option value="2">2张</option>\
-              <option value="3" selected>3张</option>\
-              <option value="4">4张</option>\
-            </select>\
-            <div id="image-row-list"></div>\
-            <button type="button" class="add-image-btn" id="add-row-image">+ 添加图片</button>\
-          </div>\
-          <div class="btn-group">\
-            <button class="btn-secondary" id="cancel-btn">取消</button>\
-            <button class="btn-primary" id="insert-btn">插入</button>\
-          </div>\
-        </div>';
-      
-      document.body.appendChild(dialog);
-      
-      var displayMode = document.getElementById('img-display-mode');
-      var singleSection = document.getElementById('single-image-section');
-      var rowSection = document.getElementById('row-image-section');
-      var imageRowList = document.getElementById('image-row-list');
-      
-      displayMode.onchange = function() {
-        if (this.value === 'single') {
-          singleSection.style.display = 'block';
-          rowSection.style.display = 'none';
-        } else {
-          singleSection.style.display = 'none';
-          rowSection.style.display = 'block';
-          if (imageRowList.children.length === 0) {
-            addRowImageItem();
-            addRowImageItem();
-          }
-        }
-      };
-      
-      function addRowImageItem() {
-        var item = document.createElement('div');
-        item.className = 'image-row-item';
-        item.innerHTML = '\
-          <input type="text" class="row-img-src" placeholder="图片地址">\
-          <input type="text" class="row-img-alt" placeholder="描述（可选）" style="width:120px;">\
-          <button type="button" class="remove-btn">删除</button>';
-        item.querySelector('.remove-btn').onclick = function() {
-          item.remove();
-        };
-        imageRowList.appendChild(item);
-      }
-      
-      document.getElementById('add-row-image').onclick = addRowImageItem;
-      
-      document.getElementById('cancel-btn').onclick = function() {
-        dialog.remove();
-      };
-      
-      document.getElementById('insert-btn').onclick = function() {
-        var shortcode = '';
-        
-        if (displayMode.value === 'single') {
-          var src = document.getElementById('img-src').value.trim();
-          if (!src) {
-            alert('请输入图片地址');
-            return;
-          }
-          var alt = document.getElementById('img-alt').value.trim();
-          var size = document.getElementById('img-size').value;
-          var align = document.getElementById('img-align').value;
-          var mode = document.getElementById('img-mode').value;
-          
-          shortcode = '\n' + includeTagStart + 'src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '"' + includeTagEnd + '\n';
-        } else {
-          var rowCount = document.getElementById('row-count').value;
-          var items = imageRowList.querySelectorAll('.image-row-item');
-          var images = [];
-          
-          items.forEach(function(item) {
-            var src = item.querySelector('.row-img-src').value.trim();
-            var alt = item.querySelector('.row-img-alt').value.trim();
-            if (src) {
-              images.push({ src: src, alt: alt });
-            }
-          });
-          
-          if (images.length === 0) {
-            alert('请至少添加一张图片');
-            return;
-          }
-          
-          shortcode = '\n' + '{%' + ' include image_row.html count="' + rowCount + '" images="';
-          images.forEach(function(img, i) {
-            shortcode += img.src + '|' + img.alt;
-            if (i < images.length - 1) shortcode += ',';
-          });
-          shortcode += '"' + ' %' + '}\n';
-        }
-        
-        insertToEditor(shortcode);
-        dialog.remove();
-      };
-      
-      dialog.onclick = function(e) {
-        if (e.target === dialog) {
-          dialog.remove();
-        }
-      };
-    }
-    
-    function insertToEditor(text) {
-      var editors = document.querySelectorAll('.cm-editor');
-      var inserted = false;
-      
-      editors.forEach(function(cm) {
-        if (inserted) return;
-        
-        if (cm.CodeMirror) {
-          cm.CodeMirror.replaceSelection(text);
-          inserted = true;
-        } else if (cm.view && cm.view.state) {
-          var view = cm.view;
-          var pos = view.state.selection.main.to;
-          view.dispatch({
-            changes: { from: pos, insert: text },
-            selection: { anchor: pos + text.length }
-          });
-          inserted = true;
-        } else if (cm.contentDOM) {
-          var view = cm;
-          if (view.state) {
-            var pos = view.state.selection.main.to;
-            view.dispatch({
-              changes: { from: pos, insert: text },
-              selection: { anchor: pos + text.length }
-            });
-            inserted = true;
-          }
-        }
-      });
-      
-      if (!inserted) {
-        var textarea = document.querySelector('textarea[name="body"]');
-        if (textarea) {
-          var start = textarea.selectionStart;
-          var end = textarea.selectionEnd;
-          textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
-          textarea.selectionStart = textarea.selectionEnd = start + text.length;
-          textarea.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      }
-    }
-    
-    function injectToolbar() {
-      var allElements = document.querySelectorAll('*');
-      var container = null;
-      
-      for (var i = 0; i < allElements.length; i++) {
-        var el = allElements[i];
-        var className = el.className || '';
-        if (typeof className === 'string' && 
-            (className.indexOf('MarkdownControl') !== -1 || 
-             className.indexOf('Widget') !== -1 ||
-             className.indexOf('Control') !== -1 ||
-             className.indexOf('markdown') !== -1)) {
-          if (el.querySelector('.cm-editor, textarea')) {
-            container = el;
-            break;
-          }
-        }
-      }
-      
-      if (!container) {
-        var cmEditor = document.querySelector('.cm-editor');
-        if (cmEditor) {
-          container = cmEditor.parentElement;
-          while (container && !container.querySelector('.custom-toolbar')) {
-            if (container.tagName === 'DIV' && container.className) {
-              break;
-            }
-            container = container.parentElement;
-          }
-        }
-      }
-      
-      if (!container) {
-        var textarea = document.querySelector('textarea[name="body"]');
-        if (textarea) {
-          container = textarea.parentElement;
-        }
-      }
-      
-      if (container && !container.querySelector('.custom-toolbar')) {
-        var toolbar = document.createElement('div');
-        toolbar.className = 'custom-toolbar';
-        toolbar.id = 'custom-image-toolbar';
-        
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'custom-image-btn';
-        btn.innerHTML = '📷 插入图片';
-        btn.onclick = function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          createImageDialog();
-        };
-        
-        toolbar.appendChild(btn);
-        container.insertBefore(toolbar, container.firstChild);
-        console.log('Toolbar injected successfully!');
-        return true;
-      }
-      return false;
-    }
-    
-    var injectionAttempts = 0;
-    var maxAttempts = 50;
-    
-    function tryInject() {
-      injectionAttempts++;
-      var success = injectToolbar();
-      if (!success && injectionAttempts < maxAttempts) {
-        setTimeout(tryInject, 200);
-      }
-    }
-    
-    function observeDOM() {
-      var observer = new MutationObserver(function(mutations) {
-        if (!document.querySelector('#custom-image-toolbar')) {
-          injectToolbar();
-        }
-      });
-      
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-    }
-    
     CMS.registerPreviewStyle('/css/hux-blog.css');
     
+    // 注册自定义图片组件 - 这会在编辑器工具栏中添加按钮
+    CMS.registerEditorComponent({
+      id: "post-image",
+      label: "高级图片",
+      fields: [
+        {
+          name: "src",
+          label: "图片地址",
+          widget: "string",
+          hint: "例如: /img/uploads/example.jpg"
+        },
+        {
+          name: "alt",
+          label: "图片描述",
+          widget: "string",
+          required: false
+        },
+        {
+          name: "size",
+          label: "图片大小",
+          widget: "select",
+          options: [
+            { label: "小 (200px)", value: "small" },
+            { label: "中 (400px)", value: "medium" },
+            { label: "大 (600px)", value: "large" },
+            { label: "全宽", value: "full" }
+          ],
+          default: "medium"
+        },
+        {
+          name: "align",
+          label: "图片位置",
+          widget: "select",
+          options: [
+            { label: "居中", value: "center" },
+            { label: "左对齐（文字环绕）", value: "left" },
+            { label: "右对齐（文字环绕）", value: "right" }
+          ],
+          default: "center"
+        },
+        {
+          name: "mode",
+          label: "点击放大",
+          widget: "select",
+          options: [
+            { label: "否", value: "normal" },
+            { label: "是（缩略图模式）", value: "thumbnail" }
+          ],
+          default: "normal"
+        }
+      ],
+      pattern: /\{%\s*include\s+post_image\.html\s+([^%]+)\s*%\}/,
+      fromBlock: function(match) {
+        var params = match[1];
+        var srcMatch = params.match(/src="([^"]+)"/);
+        var altMatch = params.match(/alt="([^"]*)"/);
+        var sizeMatch = params.match(/size="([^"]+)"/);
+        var alignMatch = params.match(/align="([^"]+)"/);
+        var modeMatch = params.match(/mode="([^"]+)"/);
+        
+        return {
+          src: srcMatch ? srcMatch[1] : '',
+          alt: altMatch ? altMatch[1] : '',
+          size: sizeMatch ? sizeMatch[1] : 'medium',
+          align: alignMatch ? alignMatch[1] : 'center',
+          mode: modeMatch ? modeMatch[1] : 'normal'
+        };
+      },
+      toBlock: function(obj) {
+        return '{% include post_image.html src="' + (obj.src || '') + '" alt="' + (obj.alt || '') + '" size="' + (obj.size || 'medium') + '" align="' + (obj.align || 'center') + '" mode="' + (obj.mode || 'normal') + '" %}';
+      },
+      toPreview: function(obj) {
+        var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
+        var maxWidth = sizeMap[obj.size] || '400px';
+        var alignStyle = obj.align === 'center' ? 'text-align: center;' : 
+                        obj.align === 'left' ? 'float: left; margin-right: 16px;' : 
+                        'float: right; margin-left: 16px;';
+        
+        return '<figure style="' + alignStyle + ' max-width: ' + maxWidth + '; margin: 16px 0;">' +
+               '<img src="' + (obj.src || '') + '" alt="' + (obj.alt || '') + '" style="max-width: 100%; border-radius: 4px;">' +
+               (obj.alt ? '<figcaption style="font-size: 13px; color: #666; margin-top: 8px;">' + obj.alt + '</figcaption>' : '') +
+               '</figure>';
+      }
+    });
+    
+    // 注册多图并排组件
+    CMS.registerEditorComponent({
+      id: "image-row",
+      label: "多图并排",
+      fields: [
+        {
+          name: "count",
+          label: "每行图片数量",
+          widget: "select",
+          options: [
+            { label: "2张", value: "2" },
+            { label: "3张", value: "3" },
+            { label: "4张", value: "4" }
+          ],
+          default: "3"
+        },
+        {
+          name: "images",
+          label: "图片列表",
+          widget: "list",
+          fields: [
+            { name: "src", label: "图片地址", widget: "string" },
+            { name: "alt", label: "描述", widget: "string", required: false }
+          ]
+        }
+      ],
+      pattern: /\{%\s*include\s+image_row\.html\s+([^%]+)\s*%\}/,
+      fromBlock: function(match) {
+        var params = match[1];
+        var countMatch = params.match(/count="([^"]+)"/);
+        var imagesMatch = params.match(/images="([^"]+)"/);
+        
+        var images = [];
+        if (imagesMatch) {
+          var imagesStr = imagesMatch[1];
+          var imgList = imagesStr.split(',');
+          imgList.forEach(function(img) {
+            var parts = img.split('|');
+            if (parts[0] && parts[0].trim()) {
+              images.push({
+                src: parts[0].trim(),
+                alt: parts[1] ? parts[1].trim() : ''
+              });
+            }
+          });
+        }
+        
+        return {
+          count: countMatch ? countMatch[1] : '3',
+          images: images
+        };
+      },
+      toBlock: function(obj) {
+        var imagesStr = '';
+        if (obj.images && obj.images.length > 0) {
+          obj.images.forEach(function(img, i) {
+            imagesStr += img.src + '|' + (img.alt || '');
+            if (i < obj.images.length - 1) imagesStr += ',';
+          });
+        }
+        return '{% include image_row.html count="' + (obj.count || '3') + '" images="' + imagesStr + '" %}';
+      },
+      toPreview: function(obj) {
+        var count = parseInt(obj.count) || 3;
+        var widthPercent = Math.floor(100 / count) - 2;
+        var html = '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;">';
+        
+        if (obj.images) {
+          obj.images.forEach(function(img) {
+            html += '<div style="flex: 1 1 ' + widthPercent + '%; min-width: 150px; text-align: center;">' +
+                    '<img src="' + (img.src || '') + '" alt="' + (img.alt || '') + '" style="max-width: 100%; border-radius: 4px;">' +
+                    (img.alt ? '<p style="font-size: 12px; color: #666; margin: 4px 0 0;">' + img.alt + '</p>' : '') +
+                    '</div>';
+          });
+        }
+        html += '</div>';
+        return html;
+      }
+    });
+    
+    // 预览模板
     var h = CMS.h || (typeof React !== 'undefined' ? React.createElement : null);
     
     if (h) {
@@ -503,21 +391,6 @@ hide-in-nav: true
         return h('div', { dangerouslySetInnerHTML: { __html: body } });
       });
     }
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(tryInject, 100);
-      observeDOM();
-    });
-    
-    window.addEventListener('load', function() {
-      tryInject();
-    });
-    
-    setInterval(function() {
-      if (!document.querySelector('#custom-image-toolbar')) {
-        injectToolbar();
-      }
-    }, 1000);
   </script>
   {% endraw %}
 </body>
