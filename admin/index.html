@@ -163,8 +163,6 @@ hide-in-nav: true
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   {% raw %}
   <script>
-    var currentEditor = null;
-    var toolbarInjected = false;
     var includeTagStart = '{%' + ' include post_image.html ';
     var includeTagEnd = ' %' + '}';
     
@@ -315,72 +313,77 @@ hide-in-nav: true
     }
     
     function insertToEditor(text) {
-      var cm = document.querySelector('.cm-editor');
-      if (cm && cm.CodeMirror) {
-        cm.CodeMirror.replaceSelection(text);
-      } else if (cm && cm.view) {
-        var view = cm.view;
-        var pos = view.state.selection.main.to;
-        view.dispatch({
-          changes: { from: pos, insert: text },
-          selection: { anchor: pos + text.length }
-        });
-      } else if (currentEditor) {
-        if (currentEditor.CodeMirror) {
-          currentEditor.CodeMirror.replaceSelection(text);
-        } else if (currentEditor.value !== undefined) {
-          var start = currentEditor.selectionStart;
-          var end = currentEditor.selectionEnd;
-          currentEditor.value = currentEditor.value.substring(0, start) + text + currentEditor.value.substring(end);
-          currentEditor.selectionStart = currentEditor.selectionEnd = start + text.length;
-          currentEditor.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      }
-    }
-    
-    function findEditor() {
-      var selectors = [
-        '.cm-editor',
-        '[class*="CodeMirror"]',
-        '[class*="markdown"]',
-        'textarea[name="body"]',
-        'textarea'
-      ];
+      var editors = document.querySelectorAll('.cm-editor');
+      var inserted = false;
       
-      for (var i = 0; i < selectors.length; i++) {
-        var el = document.querySelector(selectors[i]);
-        if (el) {
-          currentEditor = el;
-          return true;
+      editors.forEach(function(cm) {
+        if (inserted) return;
+        
+        if (cm.CodeMirror) {
+          cm.CodeMirror.replaceSelection(text);
+          inserted = true;
+        } else if (cm.view && cm.view.state) {
+          var view = cm.view;
+          var pos = view.state.selection.main.to;
+          view.dispatch({
+            changes: { from: pos, insert: text },
+            selection: { anchor: pos + text.length }
+          });
+          inserted = true;
+        } else if (cm.contentDOM) {
+          var view = cm;
+          if (view.state) {
+            var pos = view.state.selection.main.to;
+            view.dispatch({
+              changes: { from: pos, insert: text },
+              selection: { anchor: pos + text.length }
+            });
+            inserted = true;
+          }
+        }
+      });
+      
+      if (!inserted) {
+        var textarea = document.querySelector('textarea[name="body"]');
+        if (textarea) {
+          var start = textarea.selectionStart;
+          var end = textarea.selectionEnd;
+          textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
+          textarea.selectionStart = textarea.selectionEnd = start + text.length;
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
         }
       }
-      return false;
     }
     
     function injectToolbar() {
-      if (toolbarInjected) return;
-      
-      var targetSelectors = [
-        '[class*="MarkdownControl"]',
-        '[class*="markdown-control"]',
-        '[class*="Widget"]',
-        '.nc-control',
-        '[class*="Control"]'
-      ];
-      
+      var allElements = document.querySelectorAll('*');
       var container = null;
-      for (var i = 0; i < targetSelectors.length; i++) {
-        var el = document.querySelector(targetSelectors[i]);
-        if (el && el.querySelector('.cm-editor, textarea, [class*="editor"]')) {
-          container = el;
-          break;
+      
+      for (var i = 0; i < allElements.length; i++) {
+        var el = allElements[i];
+        var className = el.className || '';
+        if (typeof className === 'string' && 
+            (className.indexOf('MarkdownControl') !== -1 || 
+             className.indexOf('Widget') !== -1 ||
+             className.indexOf('Control') !== -1 ||
+             className.indexOf('markdown') !== -1)) {
+          if (el.querySelector('.cm-editor, textarea')) {
+            container = el;
+            break;
+          }
         }
       }
       
       if (!container) {
         var cmEditor = document.querySelector('.cm-editor');
         if (cmEditor) {
-          container = cmEditor.closest('[class*="Control"], [class*="Widget"], div');
+          container = cmEditor.parentElement;
+          while (container && !container.querySelector('.custom-toolbar')) {
+            if (container.tagName === 'DIV' && container.className) {
+              break;
+            }
+            container = container.parentElement;
+          }
         }
       }
       
@@ -394,6 +397,7 @@ hide-in-nav: true
       if (container && !container.querySelector('.custom-toolbar')) {
         var toolbar = document.createElement('div');
         toolbar.className = 'custom-toolbar';
+        toolbar.id = 'custom-image-toolbar';
         
         var btn = document.createElement('button');
         btn.type = 'button';
@@ -402,25 +406,33 @@ hide-in-nav: true
         btn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
-          findEditor();
           createImageDialog();
         };
         
         toolbar.appendChild(btn);
         container.insertBefore(toolbar, container.firstChild);
-        toolbarInjected = true;
         console.log('Toolbar injected successfully!');
+        return true;
       }
+      return false;
     }
     
-    function init() {
-      findEditor();
-      injectToolbar();
+    var injectionAttempts = 0;
+    var maxAttempts = 50;
+    
+    function tryInject() {
+      injectionAttempts++;
+      var success = injectToolbar();
+      if (!success && injectionAttempts < maxAttempts) {
+        setTimeout(tryInject, 200);
+      }
     }
     
     function observeDOM() {
       var observer = new MutationObserver(function(mutations) {
-        init();
+        if (!document.querySelector('#custom-image-toolbar')) {
+          injectToolbar();
+        }
       });
       
       observer.observe(document.body, {
@@ -493,19 +505,19 @@ hide-in-nav: true
     }
     
     document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(init, 500);
-      setTimeout(init, 1500);
-      setTimeout(init, 3000);
+      setTimeout(tryInject, 100);
       observeDOM();
     });
     
     window.addEventListener('load', function() {
-      setTimeout(init, 100);
-      setTimeout(init, 500);
-      setTimeout(init, 1000);
-      setTimeout(init, 2000);
-      setTimeout(init, 3000);
+      tryInject();
     });
+    
+    setInterval(function() {
+      if (!document.querySelector('#custom-image-toolbar')) {
+        injectToolbar();
+      }
+    }, 1000);
   </script>
   {% endraw %}
 </body>
