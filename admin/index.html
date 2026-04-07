@@ -24,40 +24,40 @@ hide-in-nav: true
     
     CMS.registerEditorComponent({
       id: "post-image",
-      label: "Advanced Image",
+      label: "高级图片",
       fields: [
-        { name: "src", label: "Image URL", widget: "string" },
-        { name: "alt", label: "Alt Text", widget: "string", required: false },
+        { name: "src", label: "图片地址", widget: "string" },
+        { name: "alt", label: "图片描述", widget: "string", required: false },
         { 
           name: "size", 
-          label: "Size", 
+          label: "图片大小", 
           widget: "select",
           options: [
-            { label: "Small (200px)", value: "small" },
-            { label: "Medium (400px)", value: "medium" },
-            { label: "Large (600px)", value: "large" },
-            { label: "Full Width", value: "full" }
+            { label: "小 (200px)", value: "small" },
+            { label: "中 (400px)", value: "medium" },
+            { label: "大 (600px)", value: "large" },
+            { label: "全宽", value: "full" }
           ],
           default: "medium"
         },
         { 
           name: "align", 
-          label: "Alignment", 
+          label: "图片位置", 
           widget: "select",
           options: [
-            { label: "Center", value: "center" },
-            { label: "Left", value: "left" },
-            { label: "Right", value: "right" }
+            { label: "居中", value: "center" },
+            { label: "左对齐", value: "left" },
+            { label: "右对齐", value: "right" }
           ],
           default: "center"
         },
         { 
           name: "mode", 
-          label: "Click to Enlarge", 
+          label: "点击放大", 
           widget: "select",
           options: [
-            { label: "No", value: "normal" },
-            { label: "Yes", value: "thumbnail" }
+            { label: "否", value: "normal" },
+            { label: "是", value: "thumbnail" }
           ],
           default: "normal"
         }
@@ -100,30 +100,30 @@ hide-in-nav: true
       }
     });
     
-    console.log('post-image component registered');
+    console.log('高级图片组件已注册');
     
     CMS.registerEditorComponent({
       id: "image-row",
-      label: "Image Row",
+      label: "多图并排",
       fields: [
         { 
           name: "count", 
-          label: "Images Per Row", 
+          label: "每行图片数量", 
           widget: "select",
           options: [
-            { label: "2 Images", value: "2" },
-            { label: "3 Images", value: "3" },
-            { label: "4 Images", value: "4" }
+            { label: "2张", value: "2" },
+            { label: "3张", value: "3" },
+            { label: "4张", value: "4" }
           ],
           default: "3"
         },
         {
           name: "images",
-          label: "Image List",
+          label: "图片列表",
           widget: "list",
           fields: [
-            { name: "src", label: "Image URL", widget: "string" },
-            { name: "alt", label: "Description", widget: "string", required: false }
+            { name: "src", label: "图片地址", widget: "string" },
+            { name: "alt", label: "描述", widget: "string", required: false }
           ]
         }
       ],
@@ -174,8 +174,8 @@ hide-in-nav: true
       }
     });
     
-    console.log('image-row component registered');
-    console.log('All components registered successfully');
+    console.log('多图并排组件已注册');
+    console.log('所有组件注册成功');
     
     var h = CMS.h || (typeof React !== 'undefined' ? React.createElement : null);
     if (h) {
