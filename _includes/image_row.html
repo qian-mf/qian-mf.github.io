@@ -1,17 +1,18 @@
 {% assign count = include.count | default: "3" | plus: 0 %}
-{% assign images_str = include.images | default: "" %}
+{% assign images_str = include.images | default: "" | strip %}
 {% assign images = images_str | split: "," %}
 
-<div class="image-row" style="display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0;">
+<div class="image-row">
 {% for img_str in images %}
-  {% assign parts = img_str | split: "|" %}
-  {% assign src = parts[0] | strip %}
-  {% assign alt = parts[1] | default: "" | strip %}
-  {% if src != "" %}
-  <figure class="image-row-item" style="flex: 1 1 {{ 100 | divided_by: count }}%; min-width: 150px; text-align: center; margin: 0;">
-    <img src="{{ src | prepend: site.baseurl }}" alt="{{ alt }}" loading="lazy" style="max-width: 100%; height: auto; border-radius: 4px;">
+  {% assign clean_str = img_str | strip %}
+  {% assign parts = clean_str | split: "|" %}
+  {% assign src = parts[0] | strip | remove: '"' %}
+  {% assign alt = parts[1] | default: "" | strip | remove: '"' %}
+  {% if src != "" and src != nil %}
+  <figure class="image-row-item">
+    <img src="{{ src | prepend: site.baseurl }}" alt="{{ alt }}" loading="lazy">
     {% if alt != "" %}
-    <figcaption style="font-size: 13px; color: #666; margin-top: 6px;">{{ alt }}</figcaption>
+    <figcaption>{{ alt }}</figcaption>
     {% endif %}
   </figure>
   {% endif %}
