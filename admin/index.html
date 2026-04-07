@@ -13,33 +13,14 @@ hide-in-nav: true
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  {% raw %}
   <script>
     console.log('CMS object:', typeof CMS);
     console.log('registerEditorComponent:', typeof CMS.registerEditorComponent);
     
     CMS.registerPreviewStyle('/css/hux-blog.css');
     
-    // Simple test component first
-    CMS.registerEditorComponent({
-      id: "test-component",
-      label: "Test Component",
-      fields: [
-        { name: "text", label: "Text", widget: "string" }
-      ],
-      pattern: /\[test\](.*?)\[\/test\]/,
-      fromBlock: function(match) {
-        return { text: match[1] };
-      },
-      toBlock: function(obj) {
-        return '[test]' + (obj.text || '') + '[/test]';
-      },
-      toPreview: function(obj) {
-        return '<div style="background:#f0f0f0;padding:10px;">' + (obj.text || '') + '</div>';
-      }
-    });
-    
-    console.log('Test component registered');
+    var includeStart = '{' + '% include ';
+    var includeEnd = ' %' + '}';
     
     CMS.registerEditorComponent({
       id: "post-image",
@@ -81,7 +62,7 @@ hide-in-nav: true
           default: "normal"
         }
       ],
-      pattern: /\{%\s*include\s+post_image\.html\s+([^%]+)\s*%\}/,
+      pattern: new RegExp('\\{\\%\\s*include\\s+post_image\\.html\\s+([^%]+)\\s*\\%\\}'),
       fromBlock: function(match) {
         var params = match[1];
         var srcMatch = params.match(/src="([^"]+)"/);
@@ -103,7 +84,7 @@ hide-in-nav: true
         var size = obj.size || 'medium';
         var align = obj.align || 'center';
         var mode = obj.mode || 'normal';
-        return '{% include post_image.html src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '" %}';
+        return includeStart + 'post_image.html src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '"' + includeEnd;
       },
       toPreview: function(obj) {
         var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
@@ -146,7 +127,7 @@ hide-in-nav: true
           ]
         }
       ],
-      pattern: /\{%\s*include\s+image_row\.html\s+([^%]+)\s*%\}/,
+      pattern: new RegExp('\\{\\%\\s*include\\s+image_row\\.html\\s+([^%]+)\\s*\\%\\}'),
       fromBlock: function(match) {
         var params = match[1];
         var countMatch = params.match(/count="([^"]+)"/);
@@ -171,7 +152,7 @@ hide-in-nav: true
             if (i < obj.images.length - 1) imagesStr += ',';
           }
         }
-        return '{% include image_row.html count="' + (obj.count || '3') + '" images="' + imagesStr + '" %}';
+        return includeStart + 'image_row.html count="' + (obj.count || '3') + '" images="' + imagesStr + '"' + includeEnd;
       },
       toPreview: function(obj) {
         var count = parseInt(obj.count) || 3;
@@ -201,7 +182,7 @@ hide-in-nav: true
       CMS.registerPreviewTemplate('posts', function(props) {
         var entry = props.entry;
         var body = entry.getIn(['data', 'body']) || '';
-        var includePattern = /\{%\s*include\s+(post_image|image_row)\.html\s+([^%]+)\s*%\}/g;
+        var includePattern = new RegExp('\\{\\%\\s*include\\s+(post_image|image_row)\\.html\\s+([^%]+)\\s*\\%\\}', 'g');
         body = body.replace(includePattern, function(match, type, params) {
           if (type === 'post_image') {
             var srcMatch = params.match(/src="([^"]+)"/);
@@ -241,6 +222,5 @@ hide-in-nav: true
       });
     }
   </script>
-  {% endraw %}
 </body>
 </html>
