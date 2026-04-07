@@ -10,154 +10,6 @@ hide-in-nav: true
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>星川廬 - 内容管理</title>
   <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css" />
-  <style>
-    .custom-image-btn {
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 16px;
-      margin: 8px;
-      background: #002FA7;
-      color: white !important;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .custom-image-btn:hover {
-      background: #001d6b;
-    }
-    
-    .custom-toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 12px;
-      background: linear-gradient(to bottom, #f0f0f0, #e8e8e8);
-      border-bottom: 2px solid #002FA7;
-      margin-bottom: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    
-    .image-dialog {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 99999;
-    }
-    .image-dialog-content {
-      background: white;
-      padding: 28px;
-      border-radius: 12px;
-      max-width: 520px;
-      width: 90%;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .image-dialog-content h3 {
-      margin: 0 0 20px 0;
-      color: #002FA7;
-      font-size: 20px;
-      border-bottom: 2px solid #002FA7;
-      padding-bottom: 10px;
-    }
-    .image-dialog-content label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: #333;
-      font-size: 14px;
-    }
-    .image-dialog-content input,
-    .image-dialog-content select {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 14px;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 14px;
-      transition: border-color 0.2s;
-    }
-    .image-dialog-content input:focus,
-    .image-dialog-content select:focus {
-      border-color: #002FA7;
-      outline: none;
-    }
-    .image-dialog-content .btn-group {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
-    .image-dialog-content button {
-      flex: 1;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 600;
-    }
-    .image-dialog-content .btn-primary {
-      background: #002FA7;
-      color: white;
-    }
-    .image-dialog-content .btn-primary:hover {
-      background: #001d6b;
-    }
-    .image-dialog-content .btn-secondary {
-      background: #e0e0e0;
-      color: #333;
-    }
-    .image-dialog-content .btn-secondary:hover {
-      background: #ccc;
-    }
-    
-    .image-row-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px;
-      background: #f9f9f9;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .image-row-item input {
-      flex: 1;
-      margin-bottom: 0 !important;
-    }
-    .image-row-item .remove-btn {
-      background: #dc3545;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    
-    .add-image-btn {
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      cursor: pointer;
-      margin-bottom: 14px;
-      font-weight: 600;
-      font-size: 14px;
-    }
-  </style>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
@@ -165,26 +17,15 @@ hide-in-nav: true
   <script>
     CMS.registerPreviewStyle('/css/hux-blog.css');
     
-    // 注册自定义图片组件 - 这会在编辑器工具栏中添加按钮
     CMS.registerEditorComponent({
       id: "post-image",
       label: "高级图片",
       fields: [
-        {
-          name: "src",
-          label: "图片地址",
-          widget: "string",
-          hint: "例如: /img/uploads/example.jpg"
-        },
-        {
-          name: "alt",
-          label: "图片描述",
-          widget: "string",
-          required: false
-        },
-        {
-          name: "size",
-          label: "图片大小",
+        { name: "src", label: "图片地址", widget: "string" },
+        { name: "alt", label: "图片描述", widget: "string", required: false },
+        { 
+          name: "size", 
+          label: "图片大小", 
           widget: "select",
           options: [
             { label: "小 (200px)", value: "small" },
@@ -194,24 +35,24 @@ hide-in-nav: true
           ],
           default: "medium"
         },
-        {
-          name: "align",
-          label: "图片位置",
+        { 
+          name: "align", 
+          label: "图片位置", 
           widget: "select",
           options: [
             { label: "居中", value: "center" },
-            { label: "左对齐（文字环绕）", value: "left" },
-            { label: "右对齐（文字环绕）", value: "right" }
+            { label: "左对齐", value: "left" },
+            { label: "右对齐", value: "right" }
           ],
           default: "center"
         },
-        {
-          name: "mode",
-          label: "点击放大",
+        { 
+          name: "mode", 
+          label: "点击放大", 
           widget: "select",
           options: [
             { label: "否", value: "normal" },
-            { label: "是（缩略图模式）", value: "thumbnail" }
+            { label: "是", value: "thumbnail" }
           ],
           default: "normal"
         }
@@ -224,7 +65,6 @@ hide-in-nav: true
         var sizeMatch = params.match(/size="([^"]+)"/);
         var alignMatch = params.match(/align="([^"]+)"/);
         var modeMatch = params.match(/mode="([^"]+)"/);
-        
         return {
           src: srcMatch ? srcMatch[1] : '',
           alt: altMatch ? altMatch[1] : '',
@@ -234,30 +74,34 @@ hide-in-nav: true
         };
       },
       toBlock: function(obj) {
-        return '{% include post_image.html src="' + (obj.src || '') + '" alt="' + (obj.alt || '') + '" size="' + (obj.size || 'medium') + '" align="' + (obj.align || 'center') + '" mode="' + (obj.mode || 'normal') + '" %}';
+        var src = obj.src || '';
+        var alt = obj.alt || '';
+        var size = obj.size || 'medium';
+        var align = obj.align || 'center';
+        var mode = obj.mode || 'normal';
+        return '{% include post_image.html src="' + src + '" alt="' + alt + '" size="' + size + '" align="' + align + '" mode="' + mode + '" %}';
       },
       toPreview: function(obj) {
         var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
         var maxWidth = sizeMap[obj.size] || '400px';
-        var alignStyle = obj.align === 'center' ? 'text-align: center;' : 
-                        obj.align === 'left' ? 'float: left; margin-right: 16px;' : 
-                        'float: right; margin-left: 16px;';
-        
-        return '<figure style="' + alignStyle + ' max-width: ' + maxWidth + '; margin: 16px 0;">' +
-               '<img src="' + (obj.src || '') + '" alt="' + (obj.alt || '') + '" style="max-width: 100%; border-radius: 4px;">' +
-               (obj.alt ? '<figcaption style="font-size: 13px; color: #666; margin-top: 8px;">' + obj.alt + '</figcaption>' : '') +
-               '</figure>';
+        var alignStyle = obj.align === 'center' ? 'text-align:center;' : (obj.align === 'left' ? 'float:left;margin-right:16px;' : 'float:right;margin-left:16px;');
+        var html = '<figure style="' + alignStyle + 'max-width:' + maxWidth + ';margin:16px 0;">';
+        html += '<img src="' + (obj.src || '') + '" alt="' + (obj.alt || '') + '" style="max-width:100%;border-radius:4px;">';
+        if (obj.alt) {
+          html += '<figcaption style="font-size:13px;color:#666;margin-top:8px;">' + obj.alt + '</figcaption>';
+        }
+        html += '</figure>';
+        return html;
       }
     });
     
-    // 注册多图并排组件
     CMS.registerEditorComponent({
       id: "image-row",
       label: "多图并排",
       fields: [
-        {
-          name: "count",
-          label: "每行图片数量",
+        { 
+          name: "count", 
+          label: "每行图片数量", 
           widget: "select",
           options: [
             { label: "2张", value: "2" },
@@ -281,113 +125,89 @@ hide-in-nav: true
         var params = match[1];
         var countMatch = params.match(/count="([^"]+)"/);
         var imagesMatch = params.match(/images="([^"]+)"/);
-        
         var images = [];
         if (imagesMatch) {
-          var imagesStr = imagesMatch[1];
-          var imgList = imagesStr.split(',');
-          imgList.forEach(function(img) {
-            var parts = img.split('|');
+          var imgList = imagesMatch[1].split(',');
+          for (var i = 0; i < imgList.length; i++) {
+            var parts = imgList[i].split('|');
             if (parts[0] && parts[0].trim()) {
-              images.push({
-                src: parts[0].trim(),
-                alt: parts[1] ? parts[1].trim() : ''
-              });
+              images.push({ src: parts[0].trim(), alt: parts[1] ? parts[1].trim() : '' });
             }
-          });
+          }
         }
-        
-        return {
-          count: countMatch ? countMatch[1] : '3',
-          images: images
-        };
+        return { count: countMatch ? countMatch[1] : '3', images: images };
       },
       toBlock: function(obj) {
         var imagesStr = '';
         if (obj.images && obj.images.length > 0) {
-          obj.images.forEach(function(img, i) {
-            imagesStr += img.src + '|' + (img.alt || '');
+          for (var i = 0; i < obj.images.length; i++) {
+            imagesStr += obj.images[i].src + '|' + (obj.images[i].alt || '');
             if (i < obj.images.length - 1) imagesStr += ',';
-          });
+          }
         }
         return '{% include image_row.html count="' + (obj.count || '3') + '" images="' + imagesStr + '" %}';
       },
       toPreview: function(obj) {
         var count = parseInt(obj.count) || 3;
         var widthPercent = Math.floor(100 / count) - 2;
-        var html = '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;">';
-        
+        var html = '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;">';
         if (obj.images) {
-          obj.images.forEach(function(img) {
-            html += '<div style="flex: 1 1 ' + widthPercent + '%; min-width: 150px; text-align: center;">' +
-                    '<img src="' + (img.src || '') + '" alt="' + (img.alt || '') + '" style="max-width: 100%; border-radius: 4px;">' +
-                    (img.alt ? '<p style="font-size: 12px; color: #666; margin: 4px 0 0;">' + img.alt + '</p>' : '') +
-                    '</div>';
-          });
+          for (var i = 0; i < obj.images.length; i++) {
+            var img = obj.images[i];
+            html += '<div style="flex:1 1 ' + widthPercent + '%;min-width:150px;text-align:center;">';
+            html += '<img src="' + (img.src || '') + '" alt="' + (img.alt || '') + '" style="max-width:100%;border-radius:4px;">';
+            if (img.alt) {
+              html += '<p style="font-size:12px;color:#666;margin:4px 0 0;">' + img.alt + '</p>';
+            }
+            html += '</div>';
+          }
         }
         html += '</div>';
         return html;
       }
     });
     
-    // 预览模板
     var h = CMS.h || (typeof React !== 'undefined' ? React.createElement : null);
-    
     if (h) {
       CMS.registerPreviewTemplate('posts', function(props) {
         var entry = props.entry;
         var body = entry.getIn(['data', 'body']) || '';
-        
-        var includePattern = new RegExp('\\{\\%\\s*include\\s+(post_image|image_row)\\.html\\s+([^\\%]+)\\s*\\%\\}', 'g');
-        
+        var includePattern = /\{%\s*include\s+(post_image|image_row)\.html\s+([^%]+)\s*%\}/g;
         body = body.replace(includePattern, function(match, type, params) {
           if (type === 'post_image') {
             var srcMatch = params.match(/src="([^"]+)"/);
             var altMatch = params.match(/alt="([^"]*)"/);
             var sizeMatch = params.match(/size="([^"]+)"/);
             var alignMatch = params.match(/align="([^"]+)"/);
-            
             var src = srcMatch ? srcMatch[1] : '';
             var alt = altMatch ? altMatch[1] : '';
             var size = sizeMatch ? sizeMatch[1] : 'medium';
             var align = alignMatch ? alignMatch[1] : 'center';
-            
             var sizeMap = { small: '200px', medium: '400px', large: '600px', full: '100%' };
             var maxWidth = sizeMap[size] || '400px';
-            
-            var alignStyle = align === 'center' ? 'text-align: center;' : 
-                            align === 'left' ? 'float: left; margin-right: 16px;' : 
-                            'float: right; margin-left: 16px;';
-            
-            return '<figure style="' + alignStyle + ' max-width: ' + maxWidth + '; margin: 16px 0;">' +
-                   '<img src="' + src + '" alt="' + alt + '" style="max-width: 100%; border-radius: 4px;">' +
-                   (alt ? '<figcaption style="font-size: 13px; color: #666; margin-top: 8px;">' + alt + '</figcaption>' : '') +
-                   '</figure>';
+            var alignStyle = align === 'center' ? 'text-align:center;' : (align === 'left' ? 'float:left;margin-right:16px;' : 'float:right;margin-left:16px;');
+            return '<figure style="' + alignStyle + 'max-width:' + maxWidth + ';margin:16px 0;"><img src="' + src + '" alt="' + alt + '" style="max-width:100%;border-radius:4px;">' + (alt ? '<figcaption style="font-size:13px;color:#666;margin-top:8px;">' + alt + '</figcaption>' : '') + '</figure>';
           } else if (type === 'image_row') {
             var countMatch = params.match(/count="([^"]+)"/);
             var imagesMatch = params.match(/images="([^"]+)"/);
             var count = countMatch ? countMatch[1] : '3';
             var imagesStr = imagesMatch ? imagesMatch[1] : '';
-            
-            var images = imagesStr.split(',').map(function(img) {
-              var parts = img.split('|');
-              return { src: parts[0] || '', alt: parts[1] || '' };
-            }).filter(function(img) { return img.src; });
-            
+            var imgArr = imagesStr.split(',');
             var widthPercent = Math.floor(100 / parseInt(count)) - 2;
-            var html = '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;">';
-            images.forEach(function(img) {
-              html += '<div style="flex: 1 1 ' + widthPercent + '%; min-width: 150px; text-align: center;">' +
-                      '<img src="' + img.src + '" alt="' + img.alt + '" style="max-width: 100%; border-radius: 4px;">' +
-                      (img.alt ? '<p style="font-size: 12px; color: #666; margin: 4px 0 0;">' + img.alt + '</p>' : '') +
-                      '</div>';
-            });
+            var html = '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;">';
+            for (var i = 0; i < imgArr.length; i++) {
+              var parts = imgArr[i].split('|');
+              var imgSrc = (parts[0] || '').trim();
+              var imgAlt = (parts[1] || '').trim();
+              if (imgSrc) {
+                html += '<div style="flex:1 1 ' + widthPercent + '%;min-width:150px;text-align:center;"><img src="' + imgSrc + '" alt="' + imgAlt + '" style="max-width:100%;border-radius:4px;">' + (imgAlt ? '<p style="font-size:12px;color:#666;margin:4px 0 0;">' + imgAlt + '</p>' : '') + '</div>';
+              }
+            }
             html += '</div>';
             return html;
           }
           return match;
         });
-        
         return h('div', { dangerouslySetInnerHTML: { __html: body } });
       });
     }
