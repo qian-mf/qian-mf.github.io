@@ -2105,24 +2105,27 @@ img::-moz-selection {
 }
 
 /* Image Row Styles */
-.image-row {
-  display: flex;
+.post-container .image-row {
+  display: flex !important;
   flex-wrap: wrap;
   gap: 12px;
   margin: 20px 0;
   clear: both;
 }
-.image-row-item {
-  flex: 1 1 calc(33.33% - 12px);
+.post-container .image-row-item {
+  flex: 1 1 calc(50% - 12px);
   min-width: 150px;
   text-align: center;
+  margin: 0;
 }
-.image-row-item img {
+.post-container .image-row-item img {
+  display: inline-block;
   max-width: 100%;
   height: auto;
+  margin: 0;
   border-radius: 4px;
 }
-.image-row-item figcaption {
+.post-container .image-row-item figcaption {
   font-size: 13px;
   color: #666;
   margin-top: 6px;
