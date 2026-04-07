@@ -15,7 +15,31 @@ hide-in-nav: true
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   {% raw %}
   <script>
+    console.log('CMS object:', typeof CMS);
+    console.log('registerEditorComponent:', typeof CMS.registerEditorComponent);
+    
     CMS.registerPreviewStyle('/css/hux-blog.css');
+    
+    // Simple test component first
+    CMS.registerEditorComponent({
+      id: "test-component",
+      label: "Test Component",
+      fields: [
+        { name: "text", label: "Text", widget: "string" }
+      ],
+      pattern: /\[test\](.*?)\[\/test\]/,
+      fromBlock: function(match) {
+        return { text: match[1] };
+      },
+      toBlock: function(obj) {
+        return '[test]' + (obj.text || '') + '[/test]';
+      },
+      toPreview: function(obj) {
+        return '<div style="background:#f0f0f0;padding:10px;">' + (obj.text || '') + '</div>';
+      }
+    });
+    
+    console.log('Test component registered');
     
     CMS.registerEditorComponent({
       id: "post-image",
@@ -95,6 +119,8 @@ hide-in-nav: true
       }
     });
     
+    console.log('post-image component registered');
+    
     CMS.registerEditorComponent({
       id: "image-row",
       label: "Image Row",
@@ -166,6 +192,9 @@ hide-in-nav: true
         return html;
       }
     });
+    
+    console.log('image-row component registered');
+    console.log('All components registered successfully');
     
     var h = CMS.h || (typeof React !== 'undefined' ? React.createElement : null);
     if (h) {
