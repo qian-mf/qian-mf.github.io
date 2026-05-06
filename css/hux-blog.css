@@ -1808,6 +1808,7 @@ img::-moz-selection {
   padding: 60px 15px 15px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 .gallery-item:hover .gallery-caption {
   opacity: 1;
