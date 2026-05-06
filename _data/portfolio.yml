@@ -7,3 +7,7 @@ portfolio_list:
     image: img/uploads/calligraphy-01.jpg
     description: 2021年作于拾翠楼
     order: 2
+  - order: 3
+    image: img/uploads/calligraphy-02.jpg
+    title: 篆书毛泽东词卜算子咏梅
+    description: 2022年书于拾翠楼
