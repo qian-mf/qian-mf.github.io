@@ -1766,9 +1766,8 @@ img::-moz-selection {
   margin: 40px 0;
 }
 .gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
+  column-count: 3;
+  column-gap: 25px;
   padding: 10px 0;
 }
 .gallery-item {
@@ -1779,6 +1778,8 @@ img::-moz-selection {
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background: #f8f8f8;
+  break-inside: avoid;
+  margin-bottom: 25px;
 }
 .gallery-item:hover {
   transform: translateY(-5px);
@@ -1829,8 +1830,8 @@ img::-moz-selection {
 }
 @media (max-width: 768px) {
   .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 15px;
+    column-count: 2;
+    column-gap: 15px;
   }
 }
 
