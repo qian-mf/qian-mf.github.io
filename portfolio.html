@@ -18,8 +18,8 @@ nav-order: 2
         <div class="gallery-grid">
             {% if site.data.portfolio.portfolio_list %}
                 {% for item in site.data.portfolio.portfolio_list %}
-                <div class="gallery-item">
-                    <img src="{{ item.image | absolute_url }}" alt="{{ item.title }}" onclick="openLightbox(this)">
+                <div class="gallery-item" onclick="openLightbox(this.querySelector('img'))">
+                    <img src="{{ item.image | absolute_url }}" alt="{{ item.title }}">
                     <div class="gallery-caption">
                         <h6>{{ item.title }}</h6>
                         <p class="preserve-newlines">{{ item.description | newline_to_br }}</p>
