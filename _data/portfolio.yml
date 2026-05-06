@@ -1,9 +1,9 @@
 portfolio_list:
-  - title: "教化嘉定"
-    image: "img/uploads/jiao-hua-jia-ding.jpg"
-    description: "2025-6-10代表高中参加【育美润心，嘉美致远】“美育浸润成果展”嘉定篇的社团展示，应时任学生管理处主任徐老师委托刻制"
+  - title: 教化嘉定
+    image: img/uploads/jiao-hua-jia-ding.jpg
+    description: 2025-6-10代表高中参加【育美润心，嘉美致远】“美育浸润成果展”嘉定篇的社团展示，应时任学生管理处主任徐老师委托刻制
     order: 1
-  - title: "篆书陆游诗冬夜读书示子聿"
-    image: "img/uploads/calligraphy-01.jpg"
-    description: "2021年作于拾翠楼"
+  - title: 篆书陆游诗冬夜读书示子聿
+    image: img/uploads/calligraphy-01.jpg
+    description: 2021年作于拾翠楼
     order: 2
