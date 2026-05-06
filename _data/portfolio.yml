@@ -11,3 +11,7 @@ portfolio_list:
     image: img/uploads/calligraphy-01.jpg
     description: 2021年作于拾翠楼
     order: 3
+  - order: 3
+    image: img/uploads/calligraphy-03.jpg
+    title: 篆书毛泽东词忆秦娥娄山关
+    description: 2021年书于拾翠楼
