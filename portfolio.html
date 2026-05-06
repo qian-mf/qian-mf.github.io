@@ -19,8 +19,13 @@ nav-order: 2
             {% if site.data.portfolio.portfolio_list %}
                 {% for item in site.data.portfolio.portfolio_list %}
                 <div class="gallery-item">
-                    {% assign img_path = item.image | remove_first: '/' %}
-                    <img src="{{ site.baseurl }}/{{ img_path }}" alt="{{ item.title }}" onclick="openLightbox(this)">
+                    {% assign first_char = item.image | slice: 0, 1 %}
+                    {% if first_char == '/' %}
+                        {% assign img_path = item.image %}
+                    {% else %}
+                        {% assign img_path = '/' | append: item.image %}
+                    {% endif %}
+                    <img src="{{ img_path }}" alt="{{ item.title }}" onclick="openLightbox(this)">
                     <div class="gallery-caption">
                         <h6>{{ item.title }}</h6>
                         <p class="preserve-newlines">{{ item.description | newline_to_br }}</p>
