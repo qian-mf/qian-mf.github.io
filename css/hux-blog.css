@@ -2132,3 +2132,18 @@ img::-moz-selection {
   color: #666;
   margin-top: 6px;
 }
+
+.text-align-center {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.text-align-left {
+  text-align: left;
+  padding: 8px 0;
+}
+
+.text-align-right {
+  text-align: right;
+  padding: 8px 0;
+}
