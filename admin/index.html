@@ -174,8 +174,40 @@ hide-in-nav: true
       }
     });
     
-    console.log('多图并排组件已注册');
-    console.log('所有组件注册成功');
+    CMS.registerEditorComponent({
+      id: "text-align",
+      label: "文字对齐",
+      fields: [
+        { 
+          name: "align", 
+          label: "对齐方式", 
+          widget: "select",
+          options: [
+            { label: "居中", value: "center" },
+            { label: "左对齐", value: "left" },
+            { label: "右对齐", value: "right" }
+          ],
+          default: "center"
+        },
+        { name: "content", label: "文字内容", widget: "text" }
+      ],
+      pattern: /<div class="text-align-(\w+)">(.*?)<\/div>/,
+      fromBlock: function(match) {
+        return {
+          align: match[1] || 'center',
+          content: match[2] || ''
+        };
+      },
+      toBlock: function(obj) {
+        return '<div class="text-align-' + (obj.align || 'center') + '">' + (obj.content || '') + '</div>';
+      },
+      toPreview: function(obj) {
+        var alignStyle = obj.align === 'center' ? 'text-align:center;' : (obj.align === 'left' ? 'text-align:left;' : 'text-align:right;');
+        return '<div style="' + alignStyle + 'padding:8px 0;border-left:4px solid #337ab7;">' + (obj.content || '') + '</div>';
+      }
+    });
+    
+    console.log('文字对齐组件已注册');
     
     var h = CMS.h || (typeof React !== 'undefined' ? React.createElement : null);
     if (h) {
